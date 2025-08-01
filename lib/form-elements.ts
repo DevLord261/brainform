@@ -18,39 +18,39 @@ import {
   Type,
   Info,
   Download,
-} from "lucide-react"
-import type { FormElement } from "./types"
+} from "lucide-react";
+import type { FormElement } from "./types";
 
 // Import Field Components
-import { TextFieldComponent } from "@/components/form-builder/fields/text-field"
-import { EmailFieldComponent } from "@/components/form-builder/fields/email-field"
-import { PasswordFieldComponent } from "@/components/form-builder/fields/password-field"
-import { NumberFieldComponent } from "@/components/form-builder/fields/number-field"
-import { TextareaFieldComponent } from "@/components/form-builder/fields/textarea-field"
-import { DateFieldComponent } from "@/components/form-builder/fields/date-field"
-import { TimeFieldComponent } from "@/components/form-builder/fields/time-field"
-import { CheckboxFieldComponent } from "@/components/form-builder/fields/checkbox-field"
-import { CheckboxGroupFieldComponent } from "@/components/form-builder/fields/checkbox-group-field"
-import { SelectFieldComponent } from "@/components/form-builder/fields/select-field"
-import { RadioGroupFieldComponent } from "@/components/form-builder/fields/radio-group-field"
-import { FileUploadFieldComponent } from "@/components/form-builder/fields/file-upload-field"
-import { SignatureFieldComponent } from "@/components/form-builder/fields/signature-field"
-import { RatingFieldComponent } from "@/components/form-builder/fields/rating-field"
-import { ColorPickerFieldComponent } from "@/components/form-builder/fields/color-picker-field"
-import { HiddenFieldComponent } from "@/components/form-builder/fields/hidden-field"
-import { StaticTextFieldComponent } from "@/components/form-builder/fields/static-text-field"
-import { NoteFieldComponent } from "@/components/form-builder/fields/note-field"
-import { DownloadFieldComponent } from "@/components/form-builder/fields/download-field"
+import { TextFieldComponent } from "@/components/form-builder/fields/text-field";
+import { EmailFieldComponent } from "@/components/form-builder/fields/email-field";
+import { PasswordFieldComponent } from "@/components/form-builder/fields/password-field";
+import { NumberFieldComponent } from "@/components/form-builder/fields/number-field";
+import { TextareaFieldComponent } from "@/components/form-builder/fields/textarea-field";
+import { DateFieldComponent } from "@/components/form-builder/fields/date-field";
+import { TimeFieldComponent } from "@/components/form-builder/fields/time-field";
+import { CheckboxFieldComponent } from "@/components/form-builder/fields/checkbox-field";
+import { CheckboxGroupFieldComponent } from "@/components/form-builder/fields/checkbox-group-field";
+import { SelectFieldComponent } from "@/components/form-builder/fields/select-field";
+import { RadioGroupFieldComponent } from "@/components/form-builder/fields/radio-group-field";
+import { FileUploadFieldComponent } from "@/components/form-builder/fields/file-upload-field";
+import { SignatureFieldComponent } from "@/components/form-builder/fields/signature-field";
+import { RatingFieldComponent } from "@/components/form-builder/fields/rating-field";
+import { ColorPickerFieldComponent } from "@/components/form-builder/fields/color-picker-field";
+import { HiddenFieldComponent } from "@/components/form-builder/fields/hidden-field";
+import { StaticTextFieldComponent } from "@/components/form-builder/fields/static-text-field";
+import { NoteFieldComponent } from "@/components/form-builder/fields/note-field";
+import { DownloadFieldComponent } from "@/components/form-builder/fields/download-field";
 
 // Import Properties Components
-import { FileProperties } from "@/components/form-builder/properties/file-properties"
-import { StaticTextProperties } from "@/components/form-builder/properties/static-text-properties"
-import { NoteProperties } from "@/components/form-builder/properties/note-properties"
-import { DownloadProperties } from "@/components/form-builder/properties/download-properties"
-import { PasswordProperties } from "@/components/form-builder/properties/password-properties"
-import { CheckboxGroupProperties } from "@/components/form-builder/properties/checkbox-group-properties"
+import { FileProperties } from "@/components/form-builder/properties/file-properties";
+import { StaticTextProperties } from "@/components/form-builder/properties/static-text-properties";
+import { NoteProperties } from "@/components/form-builder/properties/note-properties";
+import { DownloadProperties } from "@/components/form-builder/properties/download-properties";
+import { PasswordProperties } from "@/components/form-builder/properties/password-properties";
+import { CheckboxGroupProperties } from "@/components/form-builder/properties/checkbox-group-properties";
 
-const NoProperties = () => null
+const NoProperties = () => null;
 
 export const FormElements: FormElement[] = [
   // --- Standard Fields ---
@@ -371,4 +371,4 @@ export const FormElements: FormElement[] = [
       fileId: "",
     },
   },
-]
+];

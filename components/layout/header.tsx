@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Bell,
@@ -12,22 +12,29 @@ import {
   Grid3x3,
   HelpCircle,
   BrainCircuit,
-} from "lucide-react"
-import { useTheme } from "next-themes"
+} from "lucide-react";
+import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function AppHeader() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme } = useTheme(); //theme
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 print-hide">
       <div className="flex items-center gap-2 mr-4">
         <BrainCircuit className="h-7 w-7" />
-        <span className="text-lg font-semibold hidden md:block">BRAINSPACE</span>
+        <span className="text-lg font-semibold hidden md:block">
+          BRAINSPACE
+        </span>
       </div>
       <div className="relative flex-1 md:grow-0">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -67,9 +74,15 @@ export function AppHeader() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("light")}>
+              Light
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>
+              Dark
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>
+              System
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Button variant="ghost" size="icon">
@@ -93,5 +106,5 @@ export function AppHeader() {
         </DropdownMenu>
       </div>
     </header>
-  )
+  );
 }

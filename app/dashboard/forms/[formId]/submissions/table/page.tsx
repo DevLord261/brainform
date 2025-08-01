@@ -1,22 +1,41 @@
-"use client"
+"use client";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import { memoryStore } from "@/lib/memory-store"
-import { notFound } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Printer, FileDown } from "lucide-react"
-import * as XLSX from "xlsx"
+import { memoryStore } from "@/lib/memory-store";
+import { notFound } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Printer, FileDown } from "lucide-react";
+import * as XLSX from "xlsx";
+import { use } from "react";
 
-export default function SubmissionsTablePage({ params }: { params: { formId: string } }) {
-  const form = memoryStore.getForm(params.formId)
-  const submissions = memoryStore.getSubmissions(params.formId)
+export default function SubmissionsTablePage({
+  params,
+}: {
+  params: Promise<{ formId: string }>;
+}) {
+  const { formId } = use(params);
+  const form = memoryStore.getForm(formId);
+  const submissions = memoryStore.getSubmissions(formId);
 
   if (!form) {
-    notFound()
+    notFound();
   }
 
   const headers = form.fields
@@ -24,24 +43,27 @@ export default function SubmissionsTablePage({ params }: { params: { formId: str
     .map((field) => ({
       key: field.extraAttributes?.dbColumnName || field.label,
       label: field.label,
-    }))
+    }));
 
   const handleExport = () => {
     const dataToExport = submissions.map((submission) => {
-      const row: Record<string, any> = {
+      const row: Record<string, string> = {
         "Submission Date": submission.createdAt.toLocaleString(),
-      }
+      };
       headers.forEach((header) => {
-        row[header.label] = String(submission.data[header.key] || "")
-      })
-      return row
-    })
+        row[header.label] = String(submission.data[header.key] || "");
+      });
+      return row;
+    });
 
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions")
-    XLSX.writeFile(workbook, `${form.title.replace(/ /g, "_")}_submissions.xlsx`)
-  }
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
+    XLSX.writeFile(
+      workbook,
+      `${form.title.replace(/ /g, "_")}_submissions.xlsx`,
+    );
+  };
 
   return (
     <Card className="table-view-page">
@@ -50,7 +72,9 @@ export default function SubmissionsTablePage({ params }: { params: { formId: str
           <div>
             <CardTitle>All Submissions</CardTitle>
             <CardDescription>
-              You have received <Badge variant="secondary">{submissions.length}</Badge> submissions for this form.
+              You have received{" "}
+              <Badge variant="secondary">{submissions.length}</Badge>{" "}
+              submissions for this form.
             </CardDescription>
           </div>
           <div className="flex gap-2 print-hide">
@@ -80,15 +104,22 @@ export default function SubmissionsTablePage({ params }: { params: { formId: str
               {submissions.length > 0 ? (
                 submissions.map((submission) => (
                   <TableRow key={submission.id}>
-                    <TableCell>{submission.createdAt.toLocaleString()}</TableCell>
+                    <TableCell>
+                      {submission.createdAt.toLocaleString()}
+                    </TableCell>
                     {headers.map((header) => (
-                      <TableCell key={header.key}>{String(submission.data[header.key] || "")}</TableCell>
+                      <TableCell key={header.key}>
+                        {String(submission.data[header.key] || "")}
+                      </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={headers.length + 1} className="h-24 text-center">
+                  <TableCell
+                    colSpan={headers.length + 1}
+                    className="h-24 text-center"
+                  >
                     No submissions yet.
                   </TableCell>
                 </TableRow>
@@ -98,5 +129,5 @@ export default function SubmissionsTablePage({ params }: { params: { formId: str
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,86 +1,123 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { produce } from "immer"
-import { ImagePlus, X, ShieldCheck, Upload, Trash2, Database } from "lucide-react"
-import type { Form, DownloadableFile } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Card, CardContent } from "@/components/ui/card"
+import type React from "react";
+import { produce } from "immer";
+import {
+  ImagePlus,
+  X,
+  ShieldCheck,
+  Upload,
+  Trash2,
+  Database,
+} from "lucide-react";
+import type { Form, DownloadableFile } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 
 interface FormSettingsProps {
-  form: Form
-  setForm: React.Dispatch<React.SetStateAction<Form>>
+  form: Form;
+  setForm: React.Dispatch<React.SetStateAction<Form>>;
 }
 
 export function FormSettings({ form, setForm }: FormSettingsProps) {
-  const setFormAttribute = (attribute: keyof Form, value: any) => {
+  const setFormAttribute = <K extends keyof Form>(
+    attribute: K,
+    value: Form[K],
+  ) => {
     setForm(
       produce((draft) => {
-        ;(draft as any)[attribute] = value
+        draft[attribute] = value;
       }),
-    )
-  }
+    );
+  };
 
-  const setRecaptchaAttribute = (attribute: keyof NonNullable<Form["recaptchaSettings"]>, value: any) => {
+  const setRecaptchaAttribute = <
+    K extends keyof NonNullable<Form["recaptchaSettings"]>,
+  >(
+    attribute: K,
+    value: NonNullable<Form["recaptchaSettings"]>[K],
+  ) => {
     setForm(
       produce((draft) => {
         if (draft.recaptchaSettings) {
-          ;(draft.recaptchaSettings as any)[attribute] = value
+          draft.recaptchaSettings[attribute] = value;
         }
       }),
-    )
-  }
+    );
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setFormAttribute("imageUrl", reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setFormAttribute("imageUrl", reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
-  const handleDownloadableFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+  const handleDownloadableFileUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
     if (file) {
       // In a real app, you'd upload this file to a blob store and get a URL.
       // For now, we'll simulate this with a data URL.
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
         const newFile: DownloadableFile = {
           id: crypto.randomUUID(),
           name: file.name,
           url: reader.result as string,
-        }
+        };
         setForm(
           produce((draft) => {
-            draft.downloadableFiles = [...(draft.downloadableFiles || []), newFile]
+            draft.downloadableFiles = [
+              ...(draft.downloadableFiles || []),
+              newFile,
+            ];
           }),
-        )
-      }
-      reader.readAsDataURL(file)
+        );
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const removeDownloadableFile = (id: string) => {
     setForm(
       produce((draft) => {
-        draft.downloadableFiles = draft.downloadableFiles?.filter((f) => f.id !== id)
+        draft.downloadableFiles = draft.downloadableFiles?.filter(
+          (f) => f.id !== id,
+        );
       }),
-    )
-  }
+    );
+  };
 
   return (
-    <Accordion type="multiple" defaultValue={["general"]} className="w-full space-y-4">
-      <AccordionItem value="general" className="bg-background p-6 rounded-lg border">
-        <AccordionTrigger className="text-lg font-medium">General Settings</AccordionTrigger>
+    <Accordion
+      type="multiple"
+      defaultValue={["general"]}
+      className="w-full space-y-4"
+    >
+      <AccordionItem
+        value="general"
+        className="bg-background p-6 rounded-lg border"
+      >
+        <AccordionTrigger className="text-lg font-medium">
+          General Settings
+        </AccordionTrigger>
         <AccordionContent className="pt-4 space-y-4">
           <div className="space-y-2">
             <Label htmlFor="form-title">Form Title</Label>
@@ -105,10 +142,12 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
               <CardContent className="p-4">
                 {form.imageUrl ? (
                   <div className="relative group w-fit">
-                    <img
+                    <Image
                       src={form.imageUrl || "/placeholder.svg"}
                       alt="Form banner"
                       className="rounded-md max-h-48 max-w-full h-auto"
+                      width={100}
+                      height={100}
                     />
                     <Button
                       variant="destructive"
@@ -143,7 +182,10 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="database" className="bg-background p-6 rounded-lg border">
+      <AccordionItem
+        value="database"
+        className="bg-background p-6 rounded-lg border"
+      >
         <AccordionTrigger className="text-lg font-medium">
           <div className="flex items-center gap-2">
             <Database className="h-5 w-5" />
@@ -155,12 +197,15 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
             <div className="space-y-1">
               <Label>Save submissions to database</Label>
               <p className="text-sm text-muted-foreground">
-                When enabled, form submissions will be saved to a database table.
+                When enabled, form submissions will be saved to a database
+                table.
               </p>
             </div>
             <Switch
               checked={form.saveToDatabase}
-              onCheckedChange={(checked) => setFormAttribute("saveToDatabase", checked)}
+              onCheckedChange={(checked) =>
+                setFormAttribute("saveToDatabase", checked)
+              }
             />
           </div>
           {form.saveToDatabase && (
@@ -172,21 +217,35 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
                 onChange={(e) => setFormAttribute("tableName", e.target.value)}
                 placeholder="e.g., user_requests"
               />
-              <p className="text-xs text-muted-foreground">The name of the table where submissions will be stored.</p>
+              <p className="text-xs text-muted-foreground">
+                The name of the table where submissions will be stored.
+              </p>
             </div>
           )}
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="files" className="bg-background p-6 rounded-lg border">
-        <AccordionTrigger className="text-lg font-medium">Downloadable Files</AccordionTrigger>
+      <AccordionItem
+        value="files"
+        className="bg-background p-6 rounded-lg border"
+      >
+        <AccordionTrigger className="text-lg font-medium">
+          Downloadable Files
+        </AccordionTrigger>
         <AccordionContent className="pt-4 space-y-4">
           <Card>
             <CardContent className="p-4 space-y-4">
               {form.downloadableFiles?.map((file) => (
-                <div key={file.id} className="flex items-center justify-between p-2 rounded-md border">
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between p-2 rounded-md border"
+                >
                   <p className="text-sm font-medium truncate">{file.name}</p>
-                  <Button variant="ghost" size="icon" onClick={() => removeDownloadableFile(file.id)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeDownloadableFile(file.id)}
+                  >
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
@@ -201,7 +260,10 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
                   onChange={handleDownloadableFileUpload}
                 />
                 <Button asChild variant="outline" size="sm">
-                  <label htmlFor="downloadable-file-upload" className="cursor-pointer">
+                  <label
+                    htmlFor="downloadable-file-upload"
+                    className="cursor-pointer"
+                  >
                     Browse
                   </label>
                 </Button>
@@ -211,7 +273,10 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="recaptcha" className="bg-background p-6 rounded-lg border">
+      <AccordionItem
+        value="recaptcha"
+        className="bg-background p-6 rounded-lg border"
+      >
         <AccordionTrigger className="text-lg font-medium">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5" />
@@ -223,7 +288,9 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
             <Label>Enable reCAPTCHA</Label>
             <Switch
               checked={form.recaptchaSettings?.enabled}
-              onCheckedChange={(checked) => setRecaptchaAttribute("enabled", checked)}
+              onCheckedChange={(checked) =>
+                setRecaptchaAttribute("enabled", checked)
+              }
             />
           </div>
           {form.recaptchaSettings?.enabled && (
@@ -232,7 +299,9 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
                 <Label>Invisible reCAPTCHA</Label>
                 <Switch
                   checked={form.recaptchaSettings?.invisible}
-                  onCheckedChange={(checked) => setRecaptchaAttribute("invisible", checked)}
+                  onCheckedChange={(checked) =>
+                    setRecaptchaAttribute("invisible", checked)
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -240,7 +309,9 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
                 <Input
                   id="siteKey"
                   value={form.recaptchaSettings.siteKey}
-                  onChange={(e) => setRecaptchaAttribute("siteKey", e.target.value)}
+                  onChange={(e) =>
+                    setRecaptchaAttribute("siteKey", e.target.value)
+                  }
                   placeholder="Enter your reCAPTCHA site key"
                 />
               </div>
@@ -249,7 +320,9 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
                 <Input
                   id="secretKey"
                   value={form.recaptchaSettings.secretKey}
-                  onChange={(e) => setRecaptchaAttribute("secretKey", e.target.value)}
+                  onChange={(e) =>
+                    setRecaptchaAttribute("secretKey", e.target.value)
+                  }
                   placeholder="Enter your reCAPTCHA secret key"
                 />
               </div>
@@ -258,5 +331,5 @@ export function FormSettings({ form, setForm }: FormSettingsProps) {
         </AccordionContent>
       </AccordionItem>
     </Accordion>
-  )
+  );
 }

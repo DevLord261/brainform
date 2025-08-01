@@ -1,18 +1,36 @@
-import { memoryStore } from "@/lib/memory-store"
-import { notFound, redirect } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { memoryStore } from "@/lib/memory-store";
+import { notFound, redirect } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
-export default function SubmissionsPage({ params }: { params: { formId: string } }) {
-  const form = memoryStore.getForm(params.formId)
-  const submissions = memoryStore.getSubmissions(params.formId)
+export default async function SubmissionsPage({
+  params,
+}: {
+  params: Promise<{ formId: string }>;
+}) {
+  const { formId } = await params;
+  const form = memoryStore.getForm(formId);
+  const submissions = memoryStore.getSubmissions(formId);
 
   if (!form) {
-    notFound()
+    notFound();
   }
 
   const headers = form.fields
@@ -20,10 +38,10 @@ export default function SubmissionsPage({ params }: { params: { formId: string }
     .map((field) => ({
       key: field.extraAttributes?.dbColumnName || field.label,
       label: field.label,
-    }))
+    }));
 
   // Redirect to summary page
-  redirect(`/dashboard/forms/${params.formId}/submissions/summary`)
+  redirect(`/dashboard/forms/${formId}/submissions/summary`);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
@@ -43,7 +61,9 @@ export default function SubmissionsPage({ params }: { params: { formId: string }
         <CardHeader>
           <CardTitle>Received Data</CardTitle>
           <CardDescription>
-            You have received <Badge variant="secondary">{submissions.length}</Badge> submissions for this form.
+            You have received{" "}
+            <Badge variant="secondary">{submissions.length}</Badge> submissions
+            for this form.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -61,15 +81,22 @@ export default function SubmissionsPage({ params }: { params: { formId: string }
                 {submissions.length > 0 ? (
                   submissions.map((submission) => (
                     <TableRow key={submission.id}>
-                      <TableCell>{submission.createdAt.toLocaleString()}</TableCell>
+                      <TableCell>
+                        {submission.createdAt.toLocaleString()}
+                      </TableCell>
                       {headers.map((header) => (
-                        <TableCell key={header.key}>{String(submission.data[header.key] || "")}</TableCell>
+                        <TableCell key={header.key}>
+                          {String(submission.data[header.key] || "")}
+                        </TableCell>
                       ))}
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={headers.length + 1} className="h-24 text-center">
+                    <TableCell
+                      colSpan={headers.length + 1}
+                      className="h-24 text-center"
+                    >
                       No submissions yet.
                     </TableCell>
                   </TableRow>
@@ -80,5 +107,5 @@ export default function SubmissionsPage({ params }: { params: { formId: string }
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

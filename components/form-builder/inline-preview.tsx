@@ -1,13 +1,14 @@
-"use client"
+"use client";
 
-import type { Form } from "@/lib/types"
-import { PublicFormRenderer } from "./public-form-renderer"
-import { BrainCircuit } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import type { Form } from "@/lib/types";
+import { PublicFormRenderer } from "./public-form-renderer";
+import { BrainCircuit } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function InlinePreview({ form }: { form: Form }) {
   return (
-    <div className="h-full w-full p-4 sm:p-8">
+    <form className="h-full w-full p-4 sm:p-8">
       {form.customCss && <style>{form.customCss}</style>}
       <div
         data-theme={form.theme || "default"}
@@ -15,10 +16,12 @@ export function InlinePreview({ form }: { form: Form }) {
       >
         <div className="text-center space-y-4">
           {form.imageUrl ? (
-            <img
+            <Image
               src={form.imageUrl || "/placeholder.svg"}
               alt="Form banner"
               className="rounded-md mb-4 max-h-48 w-full object-cover mx-auto"
+              width={100}
+              height={100}
             />
           ) : (
             <div className="flex flex-col items-center text-center">
@@ -32,10 +35,14 @@ export function InlinePreview({ form }: { form: Form }) {
 
         <PublicFormRenderer form={form} />
 
-        <Button type="submit" className="w-full" onClick={() => alert("Form submitted! (This is a preview)")}>
+        <Button
+          type="submit"
+          className="w-full"
+          // onClick={() => alert("Form submitted! (This is a preview)")}
+        >
           Submit
         </Button>
       </div>
-    </div>
-  )
+    </form>
+  );
 }

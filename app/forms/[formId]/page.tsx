@@ -1,24 +1,34 @@
-import { notFound } from "next/navigation"
-import { memoryStore } from "@/lib/memory-store"
-import { PublicFormRenderer } from "@/components/form-builder/public-form-renderer"
-import { BrainCircuit, ShieldCheck } from "lucide-react"
-import { submitForm } from "./actions"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Pencil } from "lucide-react"
+import { notFound } from "next/navigation";
+import { memoryStore } from "@/lib/memory-store";
+import { PublicFormRenderer } from "@/components/form-builder/public-form-renderer";
+import { BrainCircuit, ShieldCheck } from "lucide-react";
+import { submitForm } from "./actions";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
+import Image from "next/image";
 
-export default function PublicFormPage({ params }: { params: { formId: string } }) {
-  const form = memoryStore.getForm(params.formId)
+export default async function PublicFormPage({
+  params,
+}: {
+  params: Promise<{ formId: string }>;
+}) {
+  const { formId } = await params;
+  const form = memoryStore.getForm(formId);
 
   if (!form) {
-    notFound()
+    notFound();
   }
 
-  const formAction = submitForm.bind(null, form.id)
+  const formAction = submitForm.bind(null, form.id);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-background p-4 sm:p-8 relative">
-      <Button asChild variant="outline" className="absolute top-4 right-4 z-10 bg-transparent">
+      <Button
+        asChild
+        variant="outline"
+        className="absolute top-4 right-4 z-10 bg-transparent"
+      >
         <Link href={`/dashboard/forms/${form.id}`}>
           <Pencil className="mr-2 h-4 w-4" />
           Edit Form
@@ -31,7 +41,7 @@ export default function PublicFormPage({ params }: { params: { formId: string } 
       >
         <div className="text-center space-y-4">
           {form.imageUrl ? (
-            <img
+            <Image
               src={form.imageUrl || "/placeholder.svg"}
               alt="Form banner"
               className="rounded-md mb-4 max-h-48 w-full object-cover mx-auto"
@@ -62,5 +72,5 @@ export default function PublicFormPage({ params }: { params: { formId: string } 
         </div>
       )}
     </div>
-  )
+  );
 }

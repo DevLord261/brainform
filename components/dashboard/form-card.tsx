@@ -19,6 +19,7 @@ import {
 import { MoreVertical, Eye, Edit, BarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { FormWithId, Submission } from "@/lib/memory-store";
+import { useEffect, useState } from "react";
 
 interface FormCardProps {
   form: FormWithId;
@@ -28,16 +29,23 @@ interface FormCardProps {
 export function FormCard({ form, submissions }: FormCardProps) {
   const router = useRouter();
   const submissionCount = submissions.length;
-  const lastUpdatedAt =
-    submissionCount > 0
-      ? new Date(
-          Math.max(...submissions.map((s) => new Date(s.createdAt).getTime())),
-        )
-      : null;
-
+  const [lastUpdatedAt, setlastUpdatedAt] = useState<Date | null>(null);
   const handleCardClick = () => {
     router.push(`/dashboard/forms/${form.id}/submissions`);
   };
+
+  useEffect(() => {
+    const updatedat =
+      submissionCount > 0
+        ? new Date(
+            Math.max(
+              ...submissions.map((s) => new Date(s.createdAt).getTime()),
+            ),
+          )
+        : null;
+
+    setlastUpdatedAt(updatedat);
+  }, [submissionCount, submissions]);
 
   return (
     <Card

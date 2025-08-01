@@ -1,22 +1,22 @@
-"use server"
+"use server";
 
-import { memoryStore } from "@/lib/memory-store"
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { memoryStore } from "@/lib/memory-store";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function submitForm(formId: string, formData: FormData) {
-  const form = memoryStore.getForm(formId)
+  const form = memoryStore.getForm(formId);
   if (!form) {
-    throw new Error("Form not found")
+    throw new Error("Form not found");
   }
 
-  const submissionData: Record<string, any> = {}
+  const submissionData: Record<string, FormDataEntryValue> = {};
   formData.forEach((value, key) => {
-    submissionData[key] = value
-  })
+    submissionData[key] = value;
+  });
 
-  memoryStore.saveSubmission(formId, submissionData)
+  memoryStore.saveSubmission(formId, submissionData);
 
-  revalidatePath(`/dashboard/forms/${formId}/submissions`)
-  redirect(`/forms/${formId}/thank-you`)
+  revalidatePath(`/dashboard/forms/${formId}/submissions`);
+  redirect(`/forms/${formId}/thank-you`);
 }

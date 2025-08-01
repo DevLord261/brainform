@@ -1,28 +1,32 @@
-import { FormBuilder } from "@/components/form-builder/form-builder"
-import { memoryStore } from "@/lib/memory-store"
-import { notFound } from "next/navigation"
+import { FormBuilder } from "@/components/form-builder/form-builder";
+import { memoryStore } from "@/lib/memory-store";
+import { notFound } from "next/navigation";
 
-export default function FormBuilderPage({ params }: { params: { formId: string } }) {
-  const { formId } = params
-  const isNewForm = formId === "new"
+export default async function FormBuilderPage({
+  params,
+}: {
+  params: Promise<{ formId: string }>;
+}) {
+  const { formId } = await params;
+  const isNewForm = formId === "new";
 
   if (isNewForm) {
     return (
       <div className="h-full w-full">
         <FormBuilder />
       </div>
-    )
+    );
   }
 
-  const form = memoryStore.getForm(formId)
+  const form = memoryStore.getForm(formId);
 
   if (!form) {
-    notFound()
+    notFound();
   }
 
   return (
     <div className="h-full w-full">
       <FormBuilder initialForm={form} />
     </div>
-  )
+  );
 }
