@@ -1,5 +1,6 @@
 import ContextDb from "@/db";
 import { NextRequest, NextResponse } from "next/server";
+import * as bcrypt from "bcrypt";
 
 export async function POST(request: NextRequest) {
   const { fullname, email, password } = await request.json();
@@ -10,12 +11,14 @@ export async function POST(request: NextRequest) {
   const query = db.prepare(
     "insert into users (fullname,email,password,created_at) values (@fullname,@email,@password,@created_at)",
   );
+  const hashed = await bcrypt.hash(password, 1);
+  console.log(hashed);
 
   try {
     const row = query.run({
       fullname: fullname,
       email: email,
-      password: password,
+      password: hashed,
       created_at: created_at,
     });
     if (row.changes) {

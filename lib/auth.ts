@@ -27,7 +27,6 @@ export interface VerifyOTPCredentials {
   otp: string;
 }
 
-// Mock auth service - in a real app, this would connect to your backend
 class AuthService {
   constructor() {}
 
