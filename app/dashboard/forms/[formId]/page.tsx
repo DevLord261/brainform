@@ -1,3 +1,4 @@
+import { AuthGuard } from "@/components/auth/auth-guard";
 import { FormBuilder } from "@/components/form-builder/form-builder";
 import { memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
@@ -12,9 +13,11 @@ export default async function FormBuilderPage({
 
   if (isNewForm) {
     return (
-      <div className="h-full w-full">
-        <FormBuilder />
-      </div>
+      <AuthGuard requireAuth={true}>
+        <div className="h-full w-full">
+          <FormBuilder />
+        </div>
+      </AuthGuard>
     );
   }
 

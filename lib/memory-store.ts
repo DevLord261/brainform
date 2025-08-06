@@ -26,7 +26,10 @@ const sampleForm: FormWithId = {
       id: "email",
       type: "email",
       label: "Your Email",
-      extraAttributes: { required: true, placeholder: "john.doe@example.com" },
+      extraAttributes: {
+        required: true,
+        placeholder: "john.doe@example.com",
+      },
     },
     {
       id: "rating",

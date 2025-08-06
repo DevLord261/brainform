@@ -1,5 +1,6 @@
 "use client";
 
+import { VerifyToken } from "@/app/action/verifyauthentiction";
 import {
   authService,
   AuthState,
@@ -9,13 +10,6 @@ import {
 } from "@/lib/auth";
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-// import type {
-//   AuthState,
-//   LoginCredentials,
-//   SignupCredentials,
-//   VerifyOTPCredentials,
-// } from "@/lib/auth";
-// import { authService } from "@/lib/auth";
 
 interface AuthContextType extends AuthState {
   login: (
@@ -43,11 +37,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const user = await authService.getCurrentUser();
-        setAuthState({
-          user,
-          isLoading: false,
-          isAuthenticated: !!user,
+        VerifyToken().then((payload) => {
+          if (payload && typeof payload === "object" && "sub" in payload) {
+            const user = payload.sub;
+            setAuthState({
+              user,
+              isLoading: false,
+              isAuthenticated: true,
+            });
+          } else {
+            setAuthState({
+              user: null,
+              isLoading: false,
+              isAuthenticated: false,
+            });
+          }
         });
       } catch (error) {
         setAuthState({
@@ -55,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isLoading: false,
           isAuthenticated: false,
         });
+        console.error(error);
       }
     };
 

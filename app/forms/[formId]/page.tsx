@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
+import { AuthGuard } from "@/components/auth/auth-guard";
 
 export default async function PublicFormPage({
   params,

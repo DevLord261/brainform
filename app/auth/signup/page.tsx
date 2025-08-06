@@ -5,7 +5,6 @@ import type React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/components/auth/auth-provider";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BrainCircuit, Eye, EyeOff, Loader2 } from "lucide-react";
+import { useAuth } from "@/components/auth/auth-provider";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -29,7 +29,6 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const { signup } = useAuth();
   const router = useRouter();
 
@@ -50,14 +49,18 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const result = await signup({ name, email, password });
-      if (result.success) {
+      const res = await signup({
+        fullname: name,
+        password: password,
+        email: email,
+      });
+      if (res.success) {
         router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`);
       } else {
-        setError(result.error || "Signup failed");
+        setError("Signup failed");
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setError("An unexpected error occurred " + err);
     } finally {
       setIsLoading(false);
     }

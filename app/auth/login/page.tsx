@@ -5,7 +5,6 @@ import type React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/components/auth/auth-provider";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +18,8 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BrainCircuit, Eye, EyeOff, Loader2 } from "lucide-react";
+import { authService, LoginCredentials } from "@/lib/auth";
+import { AuthProvider, useAuth } from "@/components/auth/auth-provider";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -28,20 +29,19 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useAuth();
+
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
+    const credintials: LoginCredentials = { email, password };
     try {
-      const result = await login({ email, password });
-      if (result.success) {
-        router.push("/dashboard");
-      } else {
-        setError(result.error || "Login failed");
-      }
+      const res = await login(credintials);
+      if (!res) setError("username or password is incorrect");
+
+      return router.replace("/dashboard");
     } catch (err) {
       setError("An unexpected error occurred" + err);
     } finally {

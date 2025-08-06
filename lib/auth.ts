@@ -1,13 +1,12 @@
 export interface User {
   id: string;
   email: string;
-  name: string;
-  isVerified: boolean;
-  createdAt: Date;
+  fullname: string;
+  created_at: Date;
 }
 
 export interface AuthState {
-  user: User | null;
+  user: User | null | string | undefined;
   isLoading: boolean;
   isAuthenticated: boolean;
 }
@@ -18,7 +17,7 @@ export interface LoginCredentials {
 }
 
 export interface SignupCredentials {
-  name: string;
+  fullname: string;
   email: string;
   password: string;
 }
@@ -30,83 +29,50 @@ export interface VerifyOTPCredentials {
 
 // Mock auth service - in a real app, this would connect to your backend
 class AuthService {
-  private users: Map<
-    string,
-    User & { password: string; otp?: string; otpExpiry?: Date }
-  > = new Map();
-  private sessions: Map<string, string> = new Map(); // sessionId -> userId
-
-  constructor() {
-    // Add a demo user
-    this.users.set("demo@example.com", {
-      id: "demo-user-1",
-      email: "demo@example.com",
-      name: "Demo User",
-      password: "password123",
-      isVerified: true,
-      createdAt: new Date(),
-    });
-  }
+  constructor() {}
 
   async login(
     credentials: LoginCredentials,
   ): Promise<{ success: boolean; user?: User; error?: string }> {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API delay
+    try {
+      const result = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Important!
+        },
+        body: JSON.stringify(credentials),
+      });
+      if (!result.ok)
+        return { success: false, error: "Wrong email or password" };
 
-    const user = this.users.get(credentials.email);
-    if (!user) {
-      return { success: false, error: "User not found" };
+      const user = await result.json();
+      return { success: true, user: user.user };
+    } catch (err) {
+      return { success: false, error: "" + err };
     }
-
-    if (user.password !== credentials.password) {
-      return { success: false, error: "Invalid password" };
-    }
-
-    if (!user.isVerified) {
-      return { success: false, error: "Please verify your email first" };
-    }
-
-    const sessionId = crypto.randomUUID();
-    this.sessions.set(sessionId, user.id);
-
-    // Store session in localStorage (in a real app, use httpOnly cookies)
-    if (typeof window !== "undefined") {
-      localStorage.setItem("sessionId", sessionId);
-    }
-
-    const { password, otp, otpExpiry, ...userWithoutPassword } = user;
-    return { success: true, user: userWithoutPassword };
   }
 
   async signup(
     credentials: SignupCredentials,
   ): Promise<{ success: boolean; error?: string }> {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API delay
+    try {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Important!
+        },
+        body: JSON.stringify(credentials),
+      });
+      if (!res.ok) return { success: false, error: "Email Already exists" };
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    if (this.users.has(credentials.email)) {
-      return { success: false, error: "User already exists" };
+      // In a real app, send OTP via email
+      console.log(`OTP for ${credentials.email}: ${otp}`);
+
+      return { success: true };
+    } catch (e) {
+      return { success: false, error: "" + e };
     }
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-    const user = {
-      id: crypto.randomUUID(),
-      email: credentials.email,
-      name: credentials.name,
-      password: credentials.password,
-      isVerified: false,
-      createdAt: new Date(),
-      otp,
-      otpExpiry,
-    };
-
-    this.users.set(credentials.email, user);
-
-    // In a real app, send OTP via email
-    console.log(`OTP for ${credentials.email}: ${otp}`);
-
-    return { success: true };
   }
 
   async verifyOTP(
@@ -114,37 +80,36 @@ class AuthService {
   ): Promise<{ success: boolean; user?: User; error?: string }> {
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API delay
 
-    const user = this.users.get(credentials.email);
-    if (!user) {
+    if (!credentials.email) {
       return { success: false, error: "User not found" };
     }
 
-    if (!user.otp || !user.otpExpiry) {
-      return { success: false, error: "No OTP found" };
-    }
+    // if (!user.otp || !user.otpExpiry) {
+    //   return { success: false, error: "No OTP found" };
+    // }
 
-    if (new Date() > user.otpExpiry) {
-      return { success: false, error: "OTP has expired" };
-    }
+    // if (new Date() > cred.otpExpiry) {
+    //   return { success: false, error: "OTP has expired" };
+    // }
 
-    if (user.otp !== credentials.otp) {
-      return { success: false, error: "Invalid OTP" };
-    }
+    // if (user.otp !== credentials.otp) {
+    //   return { success: false, error: "Invalid OTP" };
+    // }
 
     // Mark user as verified and clear OTP
-    user.isVerified = true;
-    delete user.otp;
-    delete user.otpExpiry;
+    // user.isVerified = true;
+    // delete user.otp;
+    // delete user.otpExpiry;
 
-    const sessionId = crypto.randomUUID();
-    this.sessions.set(sessionId, user.id);
+    // const sessionId = crypto.randomUUID();
+    // this.sessions.set(sessionId, user.id);
 
-    if (typeof window !== "undefined") {
-      localStorage.setItem("sessionId", sessionId);
-    }
+    // if (typeof window !== "undefined") {
+    //   localStorage.setItem("sessionId", sessionId);
+    // }
 
-    const { password, otp, otpExpiry, ...userWithoutPassword } = user;
-    return { success: true, user: userWithoutPassword };
+    // const { password, otp, otpExpiry, ...userWithoutPassword } = user;
+    return { success: true, user: "user" };
   }
 
   async resendOTP(
@@ -152,20 +117,15 @@ class AuthService {
   ): Promise<{ success: boolean; error?: string }> {
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API delay
 
-    const user = this.users.get(email);
-    if (!user) {
+    if (!email) {
       return { success: false, error: "User not found" };
     }
 
-    if (user.isVerified) {
-      return { success: false, error: "User is already verified" };
-    }
+    // if (user.isVerified) {
+    //   return { success: false, error: "User is already verified" };
+    // }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-    user.otp = otp;
-    user.otpExpiry = otpExpiry;
 
     console.log(`New OTP for ${email}: ${otp}`);
 

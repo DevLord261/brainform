@@ -47,7 +47,7 @@ export interface FormField {
   id: string;
   type: FormElementType;
   label: string;
-  extraAttributes?: Record<string, string>;
+  extraAttributes?: Record<string, string | string[] | boolean | number>;
 }
 
 export interface DownloadableFile {
