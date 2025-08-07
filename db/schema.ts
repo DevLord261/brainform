@@ -3,8 +3,8 @@ import ContextDb from ".";
 export const userTable = () => {
   const sql = `
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      fullname VARCHAR(255) UNIQUE,
+      id UUID PRIMARY KEY,
+      fullname VARCHAR(255),
       email VARCHAR(255) UNIQUE,
       password VARCHAR(255),
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -16,15 +16,14 @@ export const userTable = () => {
 
 export const formTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS form (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id UUID PRIMARY KEY,
     title VARCHAR(255),
     description VARCHAR(255),
-    logo BLOB,
-    downloadable_files VARCHAR(255),
-    table_name VARCHAR(255),
-    rating INTEGER,
+    imageUrl BLOB,
+    tableName VARCHAR(255),
+    fields JSON,
     public_url VARCHAR(255),
-    created_at TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     owner_id INTEGER,
     FOREIGN KEY (owner_id) REFERENCES users(id)
   );`;
@@ -33,7 +32,7 @@ export const formTable = () => {
 
 export const formresponeTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS form_response (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id UUID PRIMARY KEY,
     form_id INTEGER,
     user_id INTEGER,
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -45,7 +44,7 @@ export const formresponeTable = () => {
 
 export const formfields = () => {
   const sql = `CREATE TABLE IF NOT EXISTS form_fields (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id UUID PRIMARY KEY,
     form_id INTEGER,
     type VARCHAR(255),
     label VARCHAR(255),
@@ -57,7 +56,7 @@ export const formfields = () => {
 
 export const formanswerTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS form_answer (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id UUID PRIMARY KEY,
     field_id INTEGER,
     response_id INTEGER,
     value VARCHAR(255),
