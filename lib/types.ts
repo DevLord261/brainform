@@ -60,7 +60,7 @@ export interface Form {
   id: string;
   title: string;
   description: string;
-  createdAt: Date;
+  created_at: Date;
   imageUrl?: string | null;
   saveToDatabase?: boolean;
   tableName?: string;

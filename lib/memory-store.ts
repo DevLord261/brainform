@@ -5,7 +5,7 @@ export type FormWithId = Form & { id: string };
 export type Submission = {
   id: string;
   formId: string;
-  createdAt: Date;
+  created_at: Date;
   data: Record<string, string>;
 };
 
@@ -14,7 +14,7 @@ const sampleForm: FormWithId = {
   title: "Sample Feedback Form",
   description:
     "A sample form to collect user feedback and showcase functionality.",
-  createdAt: new Date(new Date().setDate(new Date().getDate() - 7)), // Created 7 days ago
+  created_at: new Date(new Date().setDate(new Date().getDate() - 7)), // Created 7 days ago
   fields: [
     {
       id: "name",
@@ -164,7 +164,7 @@ class MemoryStore {
         const submission: Submission = {
           id: crypto.randomUUID(),
           formId: sampleForm.id,
-          createdAt: sub.date,
+          created_at: sub.date,
           data: submissionData,
         };
 
@@ -199,7 +199,7 @@ class MemoryStore {
     const submission: Submission = {
       id: crypto.randomUUID(),
       formId,
-      createdAt: new Date(),
+      created_at: new Date(),
       data,
     };
     const formSubmissions = this.submissions.get(formId) || [];
