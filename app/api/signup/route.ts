@@ -9,13 +9,13 @@ export async function POST(request: NextRequest) {
   const db = ContextDb.getInstance().GetDb();
 
   const query = db.prepare(
-    "insert into users (fullname,email,password,created_at) values (@fullname,@email,@password,@created_at)",
+    "insert into users (id,fullname,email,password,created_at) values (@id,@fullname,@email,@password,@created_at)",
   );
   const hashed = await bcrypt.hash(password, 1);
-  console.log(hashed);
-
+  const id = crypto.randomUUID();
   try {
     const row = query.run({
+      id: id,
       fullname: fullname,
       email: email,
       password: hashed,
@@ -24,7 +24,6 @@ export async function POST(request: NextRequest) {
     if (row.changes) {
       return Response.json("Signup successfull");
     }
-
     return NextResponse.json({ success: false });
   } catch (e) {
     return Response.json("Email Already exists:");
