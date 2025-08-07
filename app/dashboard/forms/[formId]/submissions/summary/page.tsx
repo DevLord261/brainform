@@ -15,7 +15,7 @@ import { use } from "react";
 const processSubmissions = (fields: FormField[], submissions: Submission[]) => {
   const dailyCounts = submissions.reduce(
     (acc, s) => {
-      const date = new Date(s.createdAt).toLocaleDateString("en-CA"); // YYYY-MM-DD format
+      const date = new Date(s.created_at).toLocaleDateString("en-CA"); // YYYY-MM-DD format
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     },

@@ -48,7 +48,7 @@ export default function SubmissionsTablePage({
   const handleExport = () => {
     const dataToExport = submissions.map((submission) => {
       const row: Record<string, string> = {
-        "Submission Date": submission.createdAt.toLocaleString(),
+        "Submission Date": submission.created_at.toLocaleString(),
       };
       headers.forEach((header) => {
         row[header.label] = String(submission.data[header.key] || "");
@@ -105,7 +105,7 @@ export default function SubmissionsTablePage({
                 submissions.map((submission) => (
                   <TableRow key={submission.id}>
                     <TableCell>
-                      {submission.createdAt.toLocaleString()}
+                      {submission.created_at.toLocaleString()}
                     </TableCell>
                     {headers.map((header) => (
                       <TableCell key={header.key}>

@@ -82,7 +82,7 @@ export default async function SubmissionsPage({
                   submissions.map((submission) => (
                     <TableRow key={submission.id}>
                       <TableCell>
-                        {submission.createdAt.toLocaleString()}
+                        {submission.created_at.toLocaleString()}
                       </TableCell>
                       {headers.map((header) => (
                         <TableCell key={header.key}>

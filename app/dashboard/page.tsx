@@ -12,9 +12,6 @@ import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { memoryStore } from "@/lib/memory-store";
 import { FormCard } from "@/components/dashboard/form-card";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import JwtService from "@/lib/jsonwebtoken";
 import { AuthGuard } from "@/components/auth/auth-guard";
 
 export default async function DashboardPage() {

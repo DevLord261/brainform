@@ -53,7 +53,7 @@ export function FormBuilder({ initialForm }: { initialForm?: FormWithId }) {
       id: crypto.randomUUID(),
       title: "Request New User Access",
       description: "Fill out the form to request access.",
-      createdAt: new Date(),
+      created_at: new Date(),
       saveToDatabase: false,
       tableName: "",
       imageUrl: null,
@@ -163,10 +163,11 @@ export function FormBuilder({ initialForm }: { initialForm?: FormWithId }) {
 
   const handleSave = () => {
     startTransition(async () => {
+      console.log(form);
       const result = await saveFormAction(form);
       if (result.success) {
         // In a real app, you would use a toast notification here
-        alert("Form saved successfully!");
+        // alert("Form saved successfully!");
         router.push("/dashboard");
       } else {
         alert(`Error: ${result.error}`);

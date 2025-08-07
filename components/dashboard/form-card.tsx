@@ -39,7 +39,7 @@ export function FormCard({ form, submissions }: FormCardProps) {
       submissionCount > 0
         ? new Date(
             Math.max(
-              ...submissions.map((s) => new Date(s.createdAt).getTime()),
+              ...submissions.map((s) => new Date(s.created_at).getTime()),
             ),
           )
         : null;
@@ -103,7 +103,7 @@ export function FormCard({ form, submissions }: FormCardProps) {
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="text-sm text-muted-foreground space-y-1">
-          <div>Created: {new Date(form.createdAt).toLocaleDateString()}</div>
+          <div>Created: {new Date(form.created_at).toLocaleDateString()}</div>
           <div>Created by: Admin User</div>
         </div>
       </CardContent>
