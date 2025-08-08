@@ -22,7 +22,7 @@ export const formTable = () => {
     description VARCHAR(255),
     imageUrl BLOB,
     tableName VARCHAR(255),
-    fields JSON,
+    fields TEXT,
     public_url VARCHAR(255),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     owner_id INTEGER,
@@ -39,18 +39,6 @@ export const formresponeTable = () => {
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (form_id) REFERENCES form(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
-  );`;
-  ContextDb.getInstance().GetDb().exec(sql);
-};
-
-export const formfields = () => {
-  const sql = `CREATE TABLE IF NOT EXISTS form_fields (
-    id UUID PRIMARY KEY,
-    form_id INTEGER,
-    type VARCHAR(255),
-    label VARCHAR(255),
-    extra_attributes JSON,
-    FOREIGN KEY (form_id) REFERENCES form(id)
   );`;
   ContextDb.getInstance().GetDb().exec(sql);
 };

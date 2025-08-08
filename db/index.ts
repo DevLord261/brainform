@@ -4,7 +4,6 @@ import path from "path";
 import * as fs from "fs";
 import {
   formanswerTable,
-  formfields,
   formresponeTable,
   formTable,
   userTable,
@@ -35,7 +34,7 @@ class ContextDb {
   public initialize() {
     userTable();
     formanswerTable();
-    formfields();
+
     formresponeTable();
     formTable();
   }

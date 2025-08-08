@@ -5,11 +5,11 @@ export const dynamic = "force-dynamic";
 import { memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
 import type { FormField } from "@/lib/types";
-import type { Submission } from "@/lib/memory-store";
+import type { FormWithId, Submission } from "@/lib/memory-store";
 import { SummaryChartCard } from "@/components/submissions/summary-chart-card";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 
 // Helper function to process data
 const processSubmissions = (fields: FormField[], submissions: Submission[]) => {
@@ -94,7 +94,7 @@ const processSubmissions = (fields: FormField[], submissions: Submission[]) => {
         );
 
         const maxStars = field.extraAttributes?.maxStars || 5;
-        const chartData = Array.from({ length: maxStars }, (_, i) => {
+        const chartData = Array.from({ length: maxStars as number }, (_, i) => {
           const star = String(i + 1);
           return {
             name: `${star} Star${i > 0 ? "s" : ""}`,
@@ -149,15 +149,50 @@ export default function SummaryPage({
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = use(params);
-  const form = memoryStore.getForm(formId);
+  const [form, setform] = useState<FormWithId | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const formapi = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/getform?formId=${formId}`,
+          {
+            method: "GET",
+          },
+        );
+        if (!res.ok) {
+          setError(true);
+          return;
+        }
+        const data = (await res.json()) as FormWithId;
+        setform(data);
+      } catch (e) {
+        console.error("error fetching form:", e);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    formapi();
+  }, []);
+
+  // const form = memoryStore.getForm(formId);
+
+  // const form = (await formapi.json()) as FormWithId;
   const submissions = memoryStore.getSubmissions(formId);
 
-  if (!form) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Loading form data...</p>
+      </div>
+    );
+  }
+  if (error || !form) {
     notFound();
   }
-
-  const chartData = processSubmissions(form.fields, submissions);
-
   if (submissions.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -167,7 +202,7 @@ export default function SummaryPage({
       </div>
     );
   }
-
+  const chartData = processSubmissions(form.fields as FormField[], submissions);
   return (
     <div>
       <div className="flex justify-end mb-4 print-hide">

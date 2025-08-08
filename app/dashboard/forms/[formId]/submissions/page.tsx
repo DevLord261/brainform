@@ -1,4 +1,4 @@
-import { memoryStore } from "@/lib/memory-store";
+import { FormWithId, memoryStore } from "@/lib/memory-store";
 import { notFound, redirect } from "next/navigation";
 import {
   Card,
@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { FormField } from "@/lib/types";
 
 export default async function SubmissionsPage({
   params,
@@ -26,16 +27,24 @@ export default async function SubmissionsPage({
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = await params;
-  const form = memoryStore.getForm(formId);
+  // const form = memoryStore.getForm(formId);
+
+  const formapi = await fetch(
+    `http://localhost:3000/api/getform?formId=${formId}`,
+    {
+      method: "GET",
+    },
+  );
+  const form = (await formapi.json()) as FormWithId;
   const submissions = memoryStore.getSubmissions(formId);
 
   if (!form) {
     notFound();
   }
-
-  const headers = form.fields
-    .filter((field) => field.type !== "hidden") // Don't show hidden fields as columns
-    .map((field) => ({
+  const parsedfields = form.fields as FormField[];
+  const headers = parsedfields
+    .filter((field: FormField) => field.type !== "hidden") // Don't show hidden fields as columns
+    .map((field: FormField) => ({
       key: field.extraAttributes?.dbColumnName || field.label,
       label: field.label,
     }));

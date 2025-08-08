@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { memoryStore } from "@/lib/memory-store";
+import { FormWithId, memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
 import {
   Card,
@@ -23,7 +23,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Printer, FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
-import { use } from "react";
+import { use, useEffect, useState } from "react";
+import { FormField } from "@/lib/types";
 
 export default function SubmissionsTablePage({
   params,
@@ -31,16 +32,51 @@ export default function SubmissionsTablePage({
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = use(params);
-  const form = memoryStore.getForm(formId);
+  // const form = memoryStore.getForm(formId);
   const submissions = memoryStore.getSubmissions(formId);
+  const [form, setform] = useState<FormWithId | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  if (!form) {
+  useEffect(() => {
+    const formapi = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/getform?formId=${formId}`,
+          {
+            method: "GET",
+          },
+        );
+        if (!res.ok) {
+          setError(true);
+          return;
+        }
+        const data = (await res.json()) as FormWithId;
+        setform(data);
+      } catch (e) {
+        console.error("error fetching form:", e);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    formapi();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Loading form data...</p>
+      </div>
+    );
+  }
+  if (error || !form) {
     notFound();
   }
-
-  const headers = form.fields
-    .filter((field) => field.type !== "hidden")
-    .map((field) => ({
+  const parsedfieds = form.fields as FormField[];
+  const headers = parsedfieds
+    .filter((field: FormField) => field.type !== "hidden")
+    .map((field: FormField) => ({
       key: field.extraAttributes?.dbColumnName || field.label,
       label: field.label,
     }));

@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { memoryStore } from "@/lib/memory-store";
+import { FormWithId, memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
 import { IndividualResponseViewer } from "@/components/submissions/individual-response-viewer";
 
@@ -10,7 +10,14 @@ export default async function IndividualPage({
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = await params;
-  const form = memoryStore.getForm(formId);
+  // const form = memoryStore.getForm(formId);
+  const formapi = await fetch(
+    `http://localhost:3000/api/getform?formId=${formId}`,
+    {
+      method: "GET",
+    },
+  );
+  const form = (await formapi.json()) as FormWithId;
   const submissions = memoryStore.getSubmissions(formId);
 
   if (!form) {

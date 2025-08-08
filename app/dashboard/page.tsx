@@ -15,7 +15,11 @@ import { FormCard } from "@/components/dashboard/form-card";
 import { AuthGuard } from "@/components/auth/auth-guard";
 
 export default async function DashboardPage() {
-  const forms = memoryStore.getAllForms();
+  const testforms = memoryStore.getAllForms();
+  const callforms = await fetch("http://localhost:3000/api/dashboard", {
+    cache: "force-cache",
+  });
+  const forms = await callforms.json();
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
