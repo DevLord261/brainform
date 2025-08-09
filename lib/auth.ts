@@ -83,32 +83,7 @@ class AuthService {
       return { success: false, error: "User not found" };
     }
 
-    // if (!user.otp || !user.otpExpiry) {
-    //   return { success: false, error: "No OTP found" };
-    // }
-
-    // if (new Date() > cred.otpExpiry) {
-    //   return { success: false, error: "OTP has expired" };
-    // }
-
-    // if (user.otp !== credentials.otp) {
-    //   return { success: false, error: "Invalid OTP" };
-    // }
-
-    // Mark user as verified and clear OTP
-    // user.isVerified = true;
-    // delete user.otp;
-    // delete user.otpExpiry;
-
-    // const sessionId = crypto.randomUUID();
-    // this.sessions.set(sessionId, user.id);
-
-    // if (typeof window !== "undefined") {
-    //   localStorage.setItem("sessionId", sessionId);
-    // }
-
-    // const { password, otp, otpExpiry, ...userWithoutPassword } = user;
-    return { success: true, user: "user" };
+    return { success: true };
   }
 
   async resendOTP(

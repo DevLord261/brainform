@@ -1,5 +1,6 @@
 import ContextDb from "@/db";
 import { FormWithId } from "@/lib/memory-store";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
     if (!formData) {
       return NextResponse.json(null, { status: 404 });
     }
-    formData.fields = JSON.parse(formData.fields as string);
+    formData.fields = JSON.parse(formData.fields.toString());
     return NextResponse.json(formData);
   } catch (e) {
     console.log(e);

@@ -2,15 +2,13 @@ import Database from "better-sqlite3";
 import Bettersqlite3 from "better-sqlite3";
 import path from "path";
 import * as fs from "fs";
-import {
-  formanswerTable,
-  formresponeTable,
-  formTable,
-  userTable,
-} from "./schema";
+import { formresponeTable, formTable, userTable } from "./schema";
 
 interface userVersion {
   user_version: number;
+}
+interface ColumnInfo {
+  name: string;
 }
 class ContextDb {
   private static instance: ContextDb;
@@ -33,8 +31,6 @@ class ContextDb {
 
   public initialize() {
     userTable();
-    formanswerTable();
-
     formresponeTable();
     formTable();
   }
@@ -63,7 +59,10 @@ class ContextDb {
 
     if (currentVersion < 2) {
       // v2 migration: rename username → fullname
-      const columns = db.prepare("PRAGMA table_info(users);").all();
+      const columns = db
+        .prepare("PRAGMA table_info(users);")
+        .all() as ColumnInfo[];
+
       const hasUsername = columns.some((c) => c.name === "username");
       const hasFullname = columns.some((c) => c.name === "fullname");
 
@@ -73,7 +72,9 @@ class ContextDb {
       }
     }
     if (currentVersion < 3) {
-      const columns = db.prepare("PRAGMA table_info(users);").all();
+      const columns = db
+        .prepare("PRAGMA table_info(users);")
+        .all() as ColumnInfo[];
       const hasverified = columns.some((c) => c.name === "verified");
       if (!hasverified) {
         db.exec("ALTER TABLE users ADD COLUMN verified TEXT DEFAULT false;");
@@ -81,7 +82,9 @@ class ContextDb {
       }
     }
     if (currentVersion < 4) {
-      const columns = db.prepare("PRAGMA table_info(users);").all();
+      const columns = db
+        .prepare("PRAGMA table_info(users);")
+        .all() as ColumnInfo[];
       const hastoken = columns.some((c) => c.name === "token");
       if (!hastoken) {
         db.exec("ALTER TABLE users ADD COLUMN token TEXT DEFAULT null;");

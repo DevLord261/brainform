@@ -1,21 +1,25 @@
 "use server";
 
-import { memoryStore } from "@/lib/memory-store";
+import { FormWithId } from "@/lib/memory-store";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function submitForm(formId: string, formData: FormData) {
-  const form = memoryStore.getForm(formId);
+  const formres = await fetch(
+    `http://localhost:3000/api/getform?formId=${formId}`,
+  );
+  const form = (await formres.json()) as FormWithId;
   if (!form) {
     throw new Error("Form not found");
   }
-
   const submissionData: Record<string, FormDataEntryValue> = {};
   formData.forEach((value, key) => {
+    if (key.startsWith("$ACTION")) {
+      return;
+    }
     submissionData[key] = value;
   });
-
-  memoryStore.saveSubmission(formId, submissionData);
+  // console.log(submissionData);
 
   revalidatePath(`/dashboard/forms/${formId}/submissions`);
   redirect(`/forms/${formId}/thank-you`);

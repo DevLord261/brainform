@@ -20,6 +20,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { FormField } from "@/lib/types";
+import { Key } from "react";
 
 export default async function SubmissionsPage({
   params,
@@ -41,11 +42,10 @@ export default async function SubmissionsPage({
   if (!form) {
     notFound();
   }
-  const parsedfields = form.fields as FormField[];
-  const headers = parsedfields
+  const headers = form.fields
     .filter((field: FormField) => field.type !== "hidden") // Don't show hidden fields as columns
     .map((field: FormField) => ({
-      key: field.extraAttributes?.dbColumnName || field.label,
+      key: (field.extraAttributes?.dbColumnName || field.label) as Key,
       label: field.label,
     }));
 
@@ -95,7 +95,7 @@ export default async function SubmissionsPage({
                       </TableCell>
                       {headers.map((header) => (
                         <TableCell key={header.key}>
-                          {String(submission.data[header.key] || "")}
+                          {String(submission.data[header.key.toString()] || "")}
                         </TableCell>
                       ))}
                     </TableRow>

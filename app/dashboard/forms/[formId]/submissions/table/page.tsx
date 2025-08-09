@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Printer, FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
-import { use, useEffect, useState } from "react";
+import { Key, use, useEffect, useState } from "react";
 import { FormField } from "@/lib/types";
 
 export default function SubmissionsTablePage({
@@ -77,7 +77,7 @@ export default function SubmissionsTablePage({
   const headers = parsedfieds
     .filter((field: FormField) => field.type !== "hidden")
     .map((field: FormField) => ({
-      key: field.extraAttributes?.dbColumnName || field.label,
+      key: (field.extraAttributes?.dbColumnName || field.label) as Key,
       label: field.label,
     }));
 
@@ -87,7 +87,9 @@ export default function SubmissionsTablePage({
         "Submission Date": submission.created_at.toLocaleString(),
       };
       headers.forEach((header) => {
-        row[header.label] = String(submission.data[header.key] || "");
+        row[header.label] = String(
+          submission.data[header.key.toString()] || "",
+        );
       });
       return row;
     });
@@ -145,7 +147,7 @@ export default function SubmissionsTablePage({
                     </TableCell>
                     {headers.map((header) => (
                       <TableCell key={header.key}>
-                        {String(submission.data[header.key] || "")}
+                        {String(submission.data[header.key.toString()] || "")}
                       </TableCell>
                     ))}
                   </TableRow>

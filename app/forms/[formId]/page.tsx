@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { memoryStore } from "@/lib/memory-store";
+import { FormWithId } from "@/lib/memory-store";
 import { PublicFormRenderer } from "@/components/form-builder/public-form-renderer";
 import { BrainCircuit, ShieldCheck } from "lucide-react";
 import { submitForm } from "./actions";
@@ -7,7 +7,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
-import { AuthGuard } from "@/components/auth/auth-guard";
 
 export default async function PublicFormPage({
   params,
@@ -15,7 +14,11 @@ export default async function PublicFormPage({
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = await params;
-  const form = memoryStore.getForm(formId);
+  // const form = memoryStore.getForm(formId);
+  const formres = await fetch(
+    `http://localhost:3000/api/getform?formId=${formId}`,
+  );
+  const form = (await formres.json()) as FormWithId;
 
   if (!form) {
     notFound();

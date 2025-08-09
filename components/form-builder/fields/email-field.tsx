@@ -1,8 +1,8 @@
-"use client"
-import { produce } from "immer"
-import type { FieldProps } from "./types"
-import { FieldLabel } from "../field-label"
-import { Input } from "@/components/ui/input"
+"use client";
+import { produce } from "immer";
+import type { FieldProps } from "./types";
+import { FieldLabel } from "../field-label";
+import { Input } from "@/components/ui/input";
 
 export function EmailFieldComponent({ field, updateField }: FieldProps) {
   return (
@@ -11,12 +11,16 @@ export function EmailFieldComponent({ field, updateField }: FieldProps) {
         field={field}
         onUpdateLabel={(newLabel: string) => {
           const newField = produce(field, (draft) => {
-            draft.label = newLabel
-          })
-          updateField(field.id, newField)
+            draft.label = newLabel;
+          });
+          updateField(field.id, newField);
         }}
       />
-      <Input type="email" id={field.id} placeholder={field.extraAttributes?.placeholder} />
+      <Input
+        type="email"
+        id={field.id}
+        placeholder={field.extraAttributes?.placeholder as string}
+      />
     </div>
-  )
+  );
 }

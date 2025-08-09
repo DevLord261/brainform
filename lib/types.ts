@@ -37,7 +37,31 @@ export interface FormElement {
   label: string;
   icon: LucideIcon;
   category: FormElementCategory;
-  extraAttributes?: Record<string, string>;
+  extraAttributes?: Record<string, string | boolean | number | string[]> & {
+    options?: string[];
+    requireSpecialChar?: boolean | undefined;
+    textSize?: string;
+    style?: string;
+    allowedFileTypes?: string;
+    required?: boolean;
+    multipleFiles?: boolean;
+    defaultValue?: number | string | boolean;
+    content?: string | undefined;
+    placeholder?: string;
+    dbColumnName?: string;
+    showIcon?: boolean | undefined;
+    requireNumber?: boolean | undefined;
+    maxStars?: number;
+    iconName?: string;
+    labelColor?: string;
+    hintText?: string;
+    minSelections?: string | number;
+    maxSelections?: string | number;
+    linkText?: string;
+    source?: string;
+    url?: string;
+    fileId?: string;
+  };
   formComponent: React.FC<FieldProps>;
   propertiesComponent: React.FC<PropertiesProps>;
   previewComponent?: React.FC<{ field: FormField }>;
@@ -47,7 +71,31 @@ export interface FormField {
   id: string;
   type: FormElementType;
   label: string;
-  extraAttributes?: Record<string, string>;
+  extraAttributes?: Record<string, string | boolean | number | string[]> & {
+    options?: string[];
+    requireSpecialChar?: boolean | undefined;
+    textSize?: string;
+    style?: string;
+    allowedFileTypes?: string;
+    required?: boolean;
+    multipleFiles?: boolean;
+    defaultValue?: number | string | boolean;
+    content?: string | undefined;
+    placeholder?: string;
+    dbColumnName?: string;
+    showIcon?: boolean | undefined;
+    requireNumber?: boolean | undefined;
+    maxStars?: number;
+    iconName?: string;
+    labelColor?: string;
+    hintText?: string;
+    minSelections?: string | number;
+    maxSelections?: string | number;
+    linkText?: string;
+    source?: string;
+    url?: string;
+    fileId?: string;
+  };
 }
 
 export interface DownloadableFile {
@@ -64,7 +112,7 @@ export interface Form {
   imageUrl?: string | null;
   saveToDatabase?: boolean;
   tableName?: string;
-  fields: FormField[] | string;
+  fields: FormField[];
   theme?: string;
   customCss?: string;
   downloadableFiles?: DownloadableFile[];

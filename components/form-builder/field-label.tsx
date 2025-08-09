@@ -1,60 +1,69 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect, useRef } from "react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { iconMap } from "@/lib/icons"
-import type { FormField } from "@/lib/types"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { HelpCircle } from "lucide-react"
+import { useState, useEffect, useRef } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { iconMap } from "@/lib/icons";
+import type { FormField } from "@/lib/types";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 
 interface FieldLabelProps {
-  field: FormField
-  onUpdateLabel: (newLabel: string) => void
+  field: FormField;
+  onUpdateLabel: (newLabel: string) => void;
 }
 
 export function FieldLabel({ field, onUpdateLabel }: FieldLabelProps) {
-  const { showIcon, iconName, labelColor, hintText, required } = field.extraAttributes || {}
-  const IconComponent = showIcon && iconName ? iconMap[iconName as keyof typeof iconMap] : null
+  const { showIcon, iconName, labelColor, hintText, required } =
+    field.extraAttributes || {};
+  const IconComponent =
+    showIcon && iconName ? iconMap[iconName as keyof typeof iconMap] : null;
 
-  const [isEditing, setIsEditing] = useState(false)
-  const [value, setValue] = useState(field.label)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [isEditing, setIsEditing] = useState(false);
+  const [value, setValue] = useState(field.label);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setValue(field.label)
-  }, [field.label])
+    setValue(field.label);
+  }, [field.label]);
 
   useEffect(() => {
     if (isEditing) {
-      inputRef.current?.focus()
-      inputRef.current?.select()
+      inputRef.current?.focus();
+      inputRef.current?.select();
     }
-  }, [isEditing])
+  }, [isEditing]);
 
   const handleBlur = () => {
-    setIsEditing(false)
+    setIsEditing(false);
     if (value.trim() && value !== field.label) {
-      onUpdateLabel(value)
+      onUpdateLabel(value);
     } else {
-      setValue(field.label) // Revert if empty or unchanged
+      setValue(field.label); // Revert if empty or unchanged
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleBlur()
+      handleBlur();
     } else if (e.key === "Escape") {
-      setValue(field.label)
-      setIsEditing(false)
+      setValue(field.label);
+      setIsEditing(false);
     }
-  }
+  };
 
   return (
     <div className="flex items-center gap-2">
-      {IconComponent && <IconComponent className="h-4 w-4 text-muted-foreground" />}
+      {IconComponent && (
+        <IconComponent className="h-4 w-4 text-muted-foreground" />
+      )}
       {isEditing ? (
         <Input
           ref={inputRef}
@@ -68,7 +77,7 @@ export function FieldLabel({ field, onUpdateLabel }: FieldLabelProps) {
         <Label
           htmlFor={field.id}
           className="font-medium cursor-pointer"
-          style={{ color: labelColor || undefined }}
+          style={{ color: (labelColor as string) || undefined }}
           onClick={() => setIsEditing(true)}
         >
           {field.label}
@@ -79,7 +88,11 @@ export function FieldLabel({ field, onUpdateLabel }: FieldLabelProps) {
         <TooltipProvider>
           <Tooltip delayDuration={100}>
             <TooltipTrigger asChild>
-              <button type="button" className="cursor-help" onClick={(e) => e.preventDefault()}>
+              <button
+                type="button"
+                className="cursor-help"
+                onClick={(e) => e.preventDefault()}
+              >
                 <HelpCircle className="h-4 w-4 text-muted-foreground" />
               </button>
             </TooltipTrigger>
@@ -90,5 +103,5 @@ export function FieldLabel({ field, onUpdateLabel }: FieldLabelProps) {
         </TooltipProvider>
       )}
     </div>
-  )
+  );
 }

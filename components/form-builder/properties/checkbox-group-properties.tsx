@@ -1,9 +1,12 @@
-"use client"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import type { PropertiesProps } from "./types"
+"use client";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import type { PropertiesProps } from "./types";
 
-export function CheckboxGroupProperties({ field, onAttributeChange }: PropertiesProps) {
+export function CheckboxGroupProperties({
+  field,
+  onAttributeChange,
+}: PropertiesProps) {
   return (
     <>
       <div>
@@ -12,7 +15,7 @@ export function CheckboxGroupProperties({ field, onAttributeChange }: Properties
           id="minSelections"
           type="number"
           value={field.extraAttributes?.minSelections}
-          onChange={(e) => onAttributeChange("minSelections", Number.parseInt(e.target.value))}
+          onChange={(e) => onAttributeChange("minSelections", e.target.value)}
         />
       </div>
       <div>
@@ -21,9 +24,9 @@ export function CheckboxGroupProperties({ field, onAttributeChange }: Properties
           id="maxSelections"
           type="number"
           value={field.extraAttributes?.maxSelections}
-          onChange={(e) => onAttributeChange("maxSelections", Number.parseInt(e.target.value))}
+          onChange={(e) => onAttributeChange("maxSelections", e.target.value)}
         />
       </div>
     </>
-  )
+  );
 }

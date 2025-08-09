@@ -40,6 +40,8 @@ export function PropertiesSidebar({
         } else if (draft.extraAttributes) {
           if (attribute === "options") {
             draft.extraAttributes[attribute] = value.split("\n");
+          } else if (attribute === "required") {
+            draft.extraAttributes.required = value.toLowerCase() === "true";
           } else {
             draft.extraAttributes[attribute] = value;
           }
@@ -186,9 +188,11 @@ export function PropertiesSidebar({
                         <Label>Required</Label>
                         <Switch
                           checked={selectedField.extraAttributes.required}
-                          onCheckedChange={(checked) =>
-                            handleAttributeChange("required", checked)
-                          }
+                          onCheckedChange={(checked) => {
+                            if (checked)
+                              handleAttributeChange("required", "true");
+                            else handleAttributeChange("required", "false");
+                          }}
                         />
                       </div>
                     )}
@@ -216,16 +220,20 @@ export function PropertiesSidebar({
                           <Label>Show Icon</Label>
                           <Switch
                             checked={selectedField.extraAttributes.showIcon}
-                            onCheckedChange={(checked) =>
-                              handleAttributeChange("showIcon", checked)
-                            }
+                            onCheckedChange={(checked) => {
+                              if (checked)
+                                handleAttributeChange("showIcon", "true");
+                              else handleAttributeChange("showIcon", "false");
+                            }}
                           />
                         </div>
                         {selectedField.extraAttributes.showIcon && (
                           <div>
                             <Label htmlFor="iconName">Icon</Label>
                             <IconPicker
-                              value={selectedField.extraAttributes.iconName}
+                              value={
+                                selectedField.extraAttributes.iconName as string
+                              }
                               onChange={(value) =>
                                 handleAttributeChange("iconName", value)
                               }
@@ -253,7 +261,7 @@ export function PropertiesSidebar({
                           id="hintText"
                           value={selectedField.extraAttributes.hintText}
                           onChange={(e) =>
-                            handleAttributeChange("hintText", e.targe.value)
+                            handleAttributeChange("hintText", e.target.value)
                           }
                           placeholder="Enter helpful text for the user."
                           rows={3}

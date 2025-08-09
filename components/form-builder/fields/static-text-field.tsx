@@ -1,55 +1,56 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import type React from "react"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import type React from "react";
 
-import { produce } from "immer"
-import { cn } from "@/lib/utils"
-import { iconMap } from "@/lib/icons"
-import type { FieldProps } from "./types"
-import { Input } from "@/components/ui/input"
+import { produce } from "immer";
+import { cn } from "@/lib/utils";
+import { iconMap } from "@/lib/icons";
+import type { FieldProps } from "./types";
+import { Input } from "@/components/ui/input";
 
 export function StaticTextFieldComponent({ field, updateField }: FieldProps) {
-  const { content, textSize, showIcon, iconName } = field.extraAttributes || {}
-  const IconComponent = showIcon && iconName ? iconMap[iconName as keyof typeof iconMap] : null
-  const sizeClass = `text-${textSize}`
+  const { content, textSize, showIcon, iconName } = field.extraAttributes || {};
+  const IconComponent =
+    showIcon && iconName ? iconMap[iconName as keyof typeof iconMap] : null;
+  const sizeClass = `text-${textSize}`;
 
-  const [isEditing, setIsEditing] = useState(false)
-  const [value, setValue] = useState(content)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [isEditing, setIsEditing] = useState(false);
+  const [value, setValue] = useState(content);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setValue(content)
-  }, [content])
+    setValue(content);
+  }, [content]);
 
   useEffect(() => {
     if (isEditing) {
-      inputRef.current?.focus()
-      inputRef.current?.select()
+      inputRef.current?.focus();
+      inputRef.current?.select();
     }
-  }, [isEditing])
+  }, [isEditing]);
 
   const handleBlur = () => {
-    setIsEditing(false)
-    if (value.trim() && value !== content) {
+    setIsEditing(false);
+    if (value != undefined && value.trim() && value !== content) {
       const newField = produce(field, (draft) => {
         if (draft.extraAttributes) {
-          draft.extraAttributes.content = value
+          draft.extraAttributes.content = value;
         }
-      })
-      updateField(field.id, newField)
+      });
+      updateField(field.id, newField);
     } else {
-      setValue(content) // Revert if empty or unchanged
+      setValue(content); // Revert if empty or unchanged
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleBlur()
+      handleBlur();
     } else if (e.key === "Escape") {
-      setValue(content)
-      setIsEditing(false)
+      setValue(content);
+      setIsEditing(false);
     }
-  }
+  };
 
   return (
     <div className="flex items-center gap-2">
@@ -67,13 +68,13 @@ export function StaticTextFieldComponent({ field, updateField }: FieldProps) {
         <p
           className={cn("font-semibold cursor-pointer", sizeClass)}
           onClick={(e) => {
-            e.stopPropagation()
-            setIsEditing(true)
+            e.stopPropagation();
+            setIsEditing(true);
           }}
         >
           {content}
         </p>
       )}
     </div>
-  )
+  );
 }

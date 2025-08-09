@@ -13,9 +13,9 @@ import Link from "next/link";
 import { memoryStore } from "@/lib/memory-store";
 import { FormCard } from "@/components/dashboard/form-card";
 import { AuthGuard } from "@/components/auth/auth-guard";
+import { Form } from "@/lib/types";
 
 export default async function DashboardPage() {
-  const testforms = memoryStore.getAllForms();
   const callforms = await fetch("http://localhost:3000/api/dashboard", {
     cache: "force-cache",
   });
@@ -70,7 +70,7 @@ export default async function DashboardPage() {
                   </div>
                 </Card>
               </Link>
-              {forms.map((form) => {
+              {forms.map((form: Form) => {
                 const submissions = memoryStore.getSubmissions(form.id);
                 return (
                   <FormCard

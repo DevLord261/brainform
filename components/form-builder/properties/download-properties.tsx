@@ -1,36 +1,52 @@
-"use client"
-import type React from "react"
-import { produce } from "immer"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { Upload } from "lucide-react"
-import type { PropertiesProps } from "./types"
-import type { DownloadableFile } from "@/lib/types"
+"use client";
+import type React from "react";
+import { produce } from "immer";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Upload } from "lucide-react";
+import type { PropertiesProps } from "./types";
+import type { DownloadableFile } from "@/lib/types";
 
-export function DownloadProperties({ field, onAttributeChange, form, setForm }: PropertiesProps) {
-  const handleDownloadableFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+export function DownloadProperties({
+  field,
+  onAttributeChange,
+  form,
+  setForm,
+}: PropertiesProps) {
+  const handleDownloadableFileUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
     if (file && setForm) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
         const newFile: DownloadableFile = {
           id: crypto.randomUUID(),
           name: file.name,
           url: reader.result as string,
-        }
+        };
         setForm(
           produce((draft) => {
-            draft.downloadableFiles = [...(draft.downloadableFiles || []), newFile]
+            draft.downloadableFiles = [
+              ...(draft.downloadableFiles || []),
+              newFile,
+            ];
           }),
-        )
-        onAttributeChange("fileId", newFile.id)
-      }
-      reader.readAsDataURL(file)
+        );
+        onAttributeChange("fileId", newFile.id);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   return (
     <>
@@ -73,7 +89,10 @@ export function DownloadProperties({ field, onAttributeChange, form, setForm }: 
       {field.extraAttributes?.source === "upload" && (
         <div>
           <Label htmlFor="fileId">Select File</Label>
-          <Select value={field.extraAttributes?.fileId} onValueChange={(value) => onAttributeChange("fileId", value)}>
+          <Select
+            value={field.extraAttributes?.fileId}
+            onValueChange={(value) => onAttributeChange("fileId", value)}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select or upload a file..." />
             </SelectTrigger>
@@ -101,9 +120,11 @@ export function DownloadProperties({ field, onAttributeChange, form, setForm }: 
               </div>
             </SelectContent>
           </Select>
-          <p className="text-xs text-muted-foreground mt-1">Upload files in Form Settings &gt; Downloadable Files.</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Upload files in Form Settings &gt; Downloadable Files.
+          </p>
         </div>
       )}
     </>
-  )
+  );
 }

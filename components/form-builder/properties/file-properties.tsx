@@ -1,8 +1,8 @@
-"use client"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import type { PropertiesProps } from "./types"
+"use client";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import type { PropertiesProps } from "./types";
 
 export function FileProperties({ field, onAttributeChange }: PropertiesProps) {
   return (
@@ -11,7 +11,10 @@ export function FileProperties({ field, onAttributeChange }: PropertiesProps) {
         <Label>Allow Multiple Files</Label>
         <Switch
           checked={field.extraAttributes?.multipleFiles}
-          onCheckedChange={(checked) => onAttributeChange("multipleFiles", checked)}
+          onCheckedChange={(checked) => {
+            if (checked) onAttributeChange("multipleFiles", "true");
+            else onAttributeChange("multipleFiles", "false");
+          }}
         />
       </div>
       <div>
@@ -19,11 +22,15 @@ export function FileProperties({ field, onAttributeChange }: PropertiesProps) {
         <Input
           id="allowedFileTypes"
           value={field.extraAttributes?.allowedFileTypes}
-          onChange={(e) => onAttributeChange("allowedFileTypes", e.target.value)}
+          onChange={(e) =>
+            onAttributeChange("allowedFileTypes", e.target.value)
+          }
           placeholder="e.g., image/*, .pdf, .docx"
         />
-        <p className="text-xs text-muted-foreground mt-1">Use comma-separated MIME types or file extensions.</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Use comma-separated MIME types or file extensions.
+        </p>
       </div>
     </>
-  )
+  );
 }

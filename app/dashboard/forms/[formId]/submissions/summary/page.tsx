@@ -32,7 +32,8 @@ const processSubmissions = (fields: FormField[], submissions: Submission[]) => {
     )
     .map((field) => {
       const questionLabel = field.label;
-      const dbColumnName = field.extraAttributes?.dbColumnName || field.label;
+      const dbColumnName = (field.extraAttributes?.dbColumnName ||
+        field.label) as string;
       const responses = submissions
         .map((s) => s.data[dbColumnName])
         .filter(Boolean);

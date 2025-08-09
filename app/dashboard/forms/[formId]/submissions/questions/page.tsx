@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { FormWithId, memoryStore } from "@/lib/memory-store";
+import { memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
 import {
   Accordion,
@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormField } from "@/lib/types";
 
 export default async function QuestionsPage({
   params,
@@ -23,7 +24,7 @@ export default async function QuestionsPage({
       method: "GET",
     },
   );
-  const form = (await formapi.json()) as FormWithId;
+  const { form, fields } = await formapi.json();
   const submissions = memoryStore.getSubmissions(formId);
 
   if (!form) {
@@ -47,11 +48,14 @@ export default async function QuestionsPage({
       </CardHeader>
       <CardContent>
         <Accordion type="single" collapsible className="w-full">
-          {form.fields
-            .filter((field) => !["hidden", "password"].includes(field.type))
-            .map((field, index) => {
-              const dbColumnName =
-                field.extraAttributes?.dbColumnName || field.label;
+          {fields
+            .filter(
+              (field: FormField) =>
+                !["hidden", "password"].includes(field.type),
+            )
+            .map((field: FormField, index: string) => {
+              const dbColumnName = (field.extraAttributes?.dbColumnName ||
+                field.label) as string;
               const responses = submissions
                 .map((s) => s.data[dbColumnName])
                 .filter(Boolean);

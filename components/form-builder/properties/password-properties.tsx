@@ -1,12 +1,24 @@
-"use client"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { PropertiesProps } from "./types"
+"use client";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { PropertiesProps } from "./types";
 
-export function PasswordProperties({ field, onAttributeChange, fields = [] }: PropertiesProps) {
-  const passwordFields = fields.filter((f) => f.type === "password" && f.id !== field.id)
+export function PasswordProperties({
+  field,
+  onAttributeChange,
+  fields = [],
+}: PropertiesProps) {
+  const passwordFields = fields.filter(
+    (f) => f.type === "password" && f.id !== field.id,
+  );
 
   return (
     <>
@@ -14,14 +26,20 @@ export function PasswordProperties({ field, onAttributeChange, fields = [] }: Pr
         <Label>Require Number</Label>
         <Switch
           checked={field.extraAttributes?.requireNumber}
-          onCheckedChange={(checked) => onAttributeChange("requireNumber", checked)}
+          onCheckedChange={(checked) => {
+            if (checked) onAttributeChange("requireNumber", "true");
+            else onAttributeChange("requireNumber", "false");
+          }}
         />
       </div>
       <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
         <Label>Require Special Character</Label>
         <Switch
           checked={field.extraAttributes?.requireSpecialChar}
-          onCheckedChange={(checked) => onAttributeChange("requireSpecialChar", checked)}
+          onCheckedChange={(checked) => {
+            if (checked) onAttributeChange("requireSpecialChar", "true");
+            else onAttributeChange("requireSpecialChar", "false");
+          }}
         />
       </div>
       <div>
@@ -30,14 +48,16 @@ export function PasswordProperties({ field, onAttributeChange, fields = [] }: Pr
           id="minLength"
           type="number"
           value={field.extraAttributes?.minLength}
-          onChange={(e) => onAttributeChange("minLength", Number.parseInt(e.target.value))}
+          onChange={(e) => onAttributeChange("minLength", e.target.value)}
         />
       </div>
       <div>
         <Label htmlFor="confirmationField">Confirmation Field</Label>
         <Select
           value={field.extraAttributes?.confirmationField}
-          onValueChange={(value) => onAttributeChange("confirmationField", value)}
+          onValueChange={(value) =>
+            onAttributeChange("confirmationField", value)
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="Select field..." />
@@ -53,5 +73,5 @@ export function PasswordProperties({ field, onAttributeChange, fields = [] }: Pr
         </Select>
       </div>
     </>
-  )
+  );
 }
