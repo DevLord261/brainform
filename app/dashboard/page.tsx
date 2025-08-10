@@ -16,9 +16,7 @@ import { AuthGuard } from "@/components/auth/auth-guard";
 import { Form } from "@/lib/types";
 
 export default async function DashboardPage() {
-  const callforms = await fetch("http://localhost:3000/api/dashboard", {
-    cache: "force-cache",
-  });
+  const callforms = await fetch("http://localhost:3000/api/dashboard");
   const forms = await callforms.json();
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",

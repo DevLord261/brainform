@@ -3,32 +3,46 @@
 import ContextDb from "@/db";
 import { User } from "@/lib/auth";
 import { FormWithId } from "@/lib/memory-store";
+import { writeFile } from "fs/promises";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import path from "path";
 
+type submitions = Record<string, string>;
 export async function submitForm(formId: string, formData: FormData) {
-  const formres = await fetch(
-    `http://localhost:3000/api/getform?formId=${formId}`,
-  );
   const userapi = await fetch("http://localhost:3000/api/getuser");
   const user: User = await userapi.json();
-  const form = (await formres.json()) as FormWithId;
 
-  if (!form || !user) {
-    throw new Error("Form not found");
+  if (!user) {
+    throw new Error("user not found");
   }
+
   const db = ContextDb.getInstance().GetDb();
-
-  formData.forEach((value, key) => {
+  const submitions: submitions = {};
+  for (const [key, value] of formData.entries()) {
     if (key.startsWith("$ACTION")) {
-      return;
+      continue;
     }
-    db.prepare(
-      "insert into formsubmition(id,form_id,user_id,field_id,value) values(?,?,?,?,?);",
-    ).run(crypto.randomUUID(), formId, user.id, key, value);
-  });
+    let finalvalue: string;
+    if (value instanceof File) {
+      const bytes = await value.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filename = `${Date.now()}-${value.name}`;
+      const filePath = path.join(process.cwd(), "public/uploads", filename);
 
-  db.prepare("update form set submitions = submitions+1 where id=?").run(
+      await writeFile(filePath, buffer);
+      finalvalue = `http://localhost:3000/uploads/${filename}`;
+    } else {
+      finalvalue = value as string;
+    }
+    submitions[key] = finalvalue;
+  }
+
+  db.prepare(
+    `INSERT INTO formsubmition(id, form_id, user_id, submitions) VALUES (?, ?, ?, ?)`,
+  ).run(crypto.randomUUID(), formId, user.id, JSON.stringify(submitions));
+
+  db.prepare(`UPDATE form SET submitions = submitions + 1 WHERE id = ?`).run(
     formId,
   );
 

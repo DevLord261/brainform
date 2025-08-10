@@ -36,9 +36,7 @@ export const formresponeTable = () => {
     id UUID PRIMARY KEY,
     form_id UUID,
     user_id UUID,
-    field_id UUID,
-    value TEXT,
-    data BLOB,
+    submitions JSON,
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (form_id) REFERENCES form(id),
     FOREIGN KEY (user_id) REFERENCES users(id)

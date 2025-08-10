@@ -112,6 +112,7 @@ export interface Form {
   imageUrl?: string | null;
   saveToDatabase?: boolean;
   tableName?: string;
+  submitions: number;
   fields: FormField[];
   theme?: string;
   customCss?: string;
