@@ -177,7 +177,7 @@ export default function SummaryPage({
       }
     };
     formapi();
-  }, []);
+  }, [formId]);
 
   // const form = memoryStore.getForm(formId);
 
@@ -221,7 +221,8 @@ export default function SummaryPage({
               </div>
             );
           }
-          return <SummaryChartCard key={index} chartInfo={data} />;
+          if (data != null)
+            return <SummaryChartCard key={index} chartInfo={data} />;
         })}
       </div>
     </div>

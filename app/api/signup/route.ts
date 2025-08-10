@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ success: false });
   } catch (e) {
+    console.error(e);
     return Response.json("Email Already exists:");
   }
 }

@@ -61,7 +61,7 @@ export default function SubmissionsTablePage({
       }
     };
     formapi();
-  }, []);
+  }, [formId]);
 
   if (loading) {
     return (

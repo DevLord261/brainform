@@ -54,27 +54,27 @@ export function PublicFieldRenderer({
   const maxStars = field.extraAttributes?.maxStars || 5;
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    setSelectedFiles(files);
-  };
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = event.target.files;
+  //   setSelectedFiles(files);
+  // };
 
-  const removeFile = (indexToRemove: number) => {
-    if (!selectedFiles) return;
+  // const removeFile = (indexToRemove: number) => {
+  //   if (!selectedFiles) return;
 
-    const dt = new DataTransfer();
-    Array.from(selectedFiles).forEach((file, index) => {
-      if (index !== indexToRemove) {
-        dt.items.add(file);
-      }
-    });
+  //   const dt = new DataTransfer();
+  //   Array.from(selectedFiles).forEach((file, index) => {
+  //     if (index !== indexToRemove) {
+  //       dt.items.add(file);
+  //     }
+  //   });
 
-    const input = document.getElementById(field.id) as HTMLInputElement;
-    if (input) {
-      input.files = dt.files;
-      setSelectedFiles(dt.files);
-    }
-  };
+  //   const input = document.getElementById(field.id) as HTMLInputElement;
+  //   if (input) {
+  //     input.files = dt.files;
+  //     setSelectedFiles(dt.files);
+  //   }
+  // };
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return "0 Bytes";

@@ -1,9 +1,8 @@
 import ContextDb from "@/db";
 import { FormWithId } from "@/lib/memory-store";
-import { FormField } from "@/lib/types";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const db = ContextDb.getInstance().GetDb();
   try {
     const forms: FormWithId[] = db

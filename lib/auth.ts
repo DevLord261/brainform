@@ -30,6 +30,17 @@ export interface VerifyOTPCredentials {
 class AuthService {
   constructor() {}
 
+  async GetUser(): Promise<{ success: boolean; user?: User }> {
+    try {
+      const res = await fetch("http://localhost:3000/api/getuser");
+      if (!res) return { success: false };
+      const user = await res.json();
+      return { success: true, user: user };
+    } catch (e) {
+      console.error(e);
+      return { success: false };
+    }
+  }
   async login(
     credentials: LoginCredentials,
   ): Promise<{ success: boolean; user?: User; error?: string }> {
@@ -106,21 +117,21 @@ class AuthService {
     return { success: true };
   }
 
-  async getCurrentUser(): Promise<User | null> {
-    if (typeof window === "undefined") return null;
+  // async getCurrentUser(): Promise<User | null> {
+  //   if (typeof window === "undefined") return null;
 
-    const sessionId = localStorage.getItem("sessionId");
-    if (!sessionId) return null;
+  //   const sessionId = localStorage.getItem("sessionId");
+  //   if (!sessionId) return null;
 
-    const userId = this.sessions.get(sessionId);
-    if (!userId) return null;
+  //   const userId = this.sessions.get(sessionId);
+  //   if (!userId) return null;
 
-    const user = Array.from(this.users.values()).find((u) => u.id === userId);
-    if (!user) return null;
+  //   const user = Array.from(this.users.values()).find((u) => u.id === userId);
+  //   if (!user) return null;
 
-    const { password, otp, otpExpiry, ...userWithoutPassword } = user;
-    return userWithoutPassword;
-  }
+  //   const { password, otp, otpExpiry, ...userWithoutPassword } = user;
+  //   return userWithoutPassword;
+  // }
 
   async logout(): Promise<void> {
     if (typeof window === "undefined") return;

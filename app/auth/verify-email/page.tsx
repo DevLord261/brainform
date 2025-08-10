@@ -62,7 +62,7 @@ export default function VerifyEmailPage() {
         setError(result.error || "Verification failed");
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setError("" + err);
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +82,7 @@ export default function VerifyEmailPage() {
         setError(result.error || "Failed to resend OTP");
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setError("" + err);
     } finally {
       setIsResending(false);
     }
@@ -107,7 +107,7 @@ export default function VerifyEmailPage() {
               Verify Your Email
             </CardTitle>
             <CardDescription>
-              We've sent a 6-digit code to
+              We`&apos`ve sent a 6-digit code to
               <br />
               <strong>{email}</strong>
             </CardDescription>
@@ -164,7 +164,7 @@ export default function VerifyEmailPage() {
             <div className="mt-6 text-center space-y-4">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">
-                  Didn't receive the code?
+                  Didn`&apos`t receive the code?
                 </p>
                 <Button
                   variant="outline"

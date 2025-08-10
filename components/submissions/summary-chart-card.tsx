@@ -20,13 +20,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function SummaryChartCard({ chartInfo }: { chartInfo: any }) {
+interface chartInfo {
+  type: string;
+  questionLabel: string;
+  data:
+    | {
+        name: string;
+        value: unknown;
+      }[]
+    | string[];
+  totalResponses: number;
+}
+export function SummaryChartCard({ chartInfo }: { chartInfo: chartInfo }) {
   const { type, questionLabel, data, totalResponses } = chartInfo;
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
 
   // Generate complete month data with all days
   const generateCompleteMonthData = (
-    originalData: any[],
+    originalData: { name: string; value: unknown }[],
     monthIndex: number,
   ) => {
     const currentYear = new Date().getFullYear();
@@ -37,7 +48,7 @@ export function SummaryChartCard({ chartInfo }: { chartInfo: any }) {
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${currentYear}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const existingData = originalData.find(
-        (item: any) => item.name === dateStr,
+        (item: { name: string; value: unknown }) => item.name === dateStr,
       );
 
       completeData.push({

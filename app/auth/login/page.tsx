@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BrainCircuit, Eye, EyeOff, Loader2 } from "lucide-react";
-import { authService, LoginCredentials } from "@/lib/auth";
-import { AuthProvider, useAuth } from "@/components/auth/auth-provider";
+import { LoginCredentials } from "@/lib/auth";
+import { useAuth } from "@/components/auth/auth-provider";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

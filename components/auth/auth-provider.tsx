@@ -6,6 +6,7 @@ import {
   AuthState,
   LoginCredentials,
   SignupCredentials,
+  User,
   VerifyOTPCredentials,
 } from "@/lib/auth";
 import type React from "react";
@@ -23,6 +24,7 @@ interface AuthContextType extends AuthState {
   ) => Promise<{ success: boolean; error?: string }>;
   resendOTP: (email: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
+  GetCurrentUser: () => Promise<{ success: boolean; user?: User }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -96,6 +98,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const resendOTP = async (email: string) => {
     return await authService.resendOTP(email);
+  };
+
+  const GetCurrentUser = async () => {
+    const user = await authService.GetUser();
+    if (user.success) return user.user;
+    return null;
   };
 
   const logout = async () => {

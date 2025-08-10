@@ -26,16 +26,13 @@ class JwtService {
 
   public async VerifyToken(token: string) {
     try {
-      const { payload, protectedHeader } = await jose.jwtVerify(
-        token,
-        this.secret,
-        {
-          issuer: "brainkets:issuer",
-          audience: "brainform",
-        },
-      );
+      const { payload } = await jose.jwtVerify(token, this.secret, {
+        issuer: "brainkets:issuer",
+        audience: "brainform",
+      });
       return payload;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }

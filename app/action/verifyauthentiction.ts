@@ -23,6 +23,7 @@ export async function VerifyToken() {
     const verify = await jwtService.VerifyToken(sessiontoken);
     return verify;
   } catch (e) {
+    console.error(e);
     return null;
   }
 }

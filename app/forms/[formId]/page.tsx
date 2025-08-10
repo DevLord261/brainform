@@ -14,7 +14,7 @@ export default async function PublicFormPage({
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = await params;
-  // const form = memoryStore.getForm(formId);
+
   const formres = await fetch(
     `http://localhost:3000/api/getform?formId=${formId}`,
   );

@@ -14,7 +14,7 @@ class ContextDb {
   private static instance: ContextDb;
   private db: Bettersqlite3.Database;
   private dbPath = path.resolve(process.cwd(), "db", "database.db");
-  DB_VERSION: number = 4;
+  DB_VERSION: number = 5;
   private constructor() {
     this.db = new Database(this.dbPath, { verbose: console.log });
   }
@@ -90,6 +90,10 @@ class ContextDb {
         db.exec("ALTER TABLE users ADD COLUMN token TEXT DEFAULT null;");
         console.log("✅ Migrated users table to add 'token'.");
       }
+    }
+    if (currentVersion < 5) {
+      db.exec("ALTER TABLE form add COLUMN submitions INTEGER DEFAULT 0;");
+      console.log("✅ Migrated users table to add 'submissions'.");
     }
   }
 }
