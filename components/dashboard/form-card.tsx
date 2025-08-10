@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Eye, Edit, BarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { FormWithId, Submission } from "@/lib/memory-store";
+import type { FormWithId } from "@/lib/memory-store";
 import { useEffect, useState } from "react";
+import { Submittions } from "@/lib/types";
 
 interface FormCardProps {
   form: FormWithId;
-  submissions: Submission[];
+  submissions: Submittions[];
 }
 
 export function FormCard({ form, submissions }: FormCardProps) {
@@ -39,7 +40,7 @@ export function FormCard({ form, submissions }: FormCardProps) {
       submissionCount > 0
         ? new Date(
             Math.max(
-              ...submissions.map((s) => new Date(s.created_at).getTime()),
+              ...submissions.map((s) => new Date(s.submitted_at).getTime()),
             ),
           )
         : null;

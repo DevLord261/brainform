@@ -10,14 +10,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { memoryStore } from "@/lib/memory-store";
 import { FormCard } from "@/components/dashboard/form-card";
 import { AuthGuard } from "@/components/auth/auth-guard";
-import { Form } from "@/lib/types";
+import { Form, Submittions } from "@/lib/types";
 
 export default async function DashboardPage() {
   const callforms = await fetch("http://localhost:3000/api/dashboard");
   const forms = await callforms.json();
+
+  const getform = async (formId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/submittions?formId=${formId}`,
+      );
+      if (!res.ok) return;
+      const json = (await res.json()) as Submittions[];
+
+      return json;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Fetch all submissions in parallel for all forms
+  const submissionsArray = await Promise.all(
+    forms.map((form: Form) => getform(form.id)),
+  );
+
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -68,13 +87,12 @@ export default async function DashboardPage() {
                   </div>
                 </Card>
               </Link>
-              {forms.map((form: Form) => {
-                const submissions = memoryStore.getSubmissions(form.id);
+              {forms.map((form: Form, idx: number) => {
                 return (
                   <FormCard
                     key={form.id}
                     form={form}
-                    submissions={submissions}
+                    submissions={submissionsArray[idx]}
                   />
                 );
               })}

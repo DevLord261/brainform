@@ -124,3 +124,11 @@ export interface Form {
     secretKey: string;
   };
 }
+
+export interface Submittions {
+  id: string;
+  form_id: string;
+  user_id: string;
+  submitions: Record<string, string>;
+  submitted_at: string;
+}

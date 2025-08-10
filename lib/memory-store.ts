@@ -2,12 +2,6 @@ import type { Form } from "./types";
 
 // Add ID to the Form type for storage purposes
 export type FormWithId = Form & { id: string };
-export type Submission = {
-  id: string;
-  formId: string;
-  created_at: Date;
-  data: Record<string, string>;
-};
 
 const sampleForm: FormWithId = {
   id: "sample-form-1",
