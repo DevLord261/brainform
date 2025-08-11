@@ -108,6 +108,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     await authService.logout();
+
     setAuthState({
       user: null,
       isLoading: false,
@@ -124,6 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         verifyOTP,
         resendOTP,
         logout,
+        GetCurrentUser,
       }}
     >
       {children}

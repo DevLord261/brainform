@@ -1,6 +1,6 @@
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { FormBuilder } from "@/components/form-builder/form-builder";
-import { memoryStore } from "@/lib/memory-store";
+import { FormWithId, memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
 
 export default async function FormBuilderPage({
@@ -21,7 +21,13 @@ export default async function FormBuilderPage({
     );
   }
 
-  const form = memoryStore.getForm(formId);
+  const formapi = await fetch(
+    `http://localhost:3000/api/getform?formId=${formId}`,
+    {
+      method: "GET",
+    },
+  );
+  const form = (await formapi.json()) as FormWithId;
 
   if (!form) {
     notFound();

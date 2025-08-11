@@ -136,11 +136,9 @@ class AuthService {
   async logout(): Promise<void> {
     if (typeof window === "undefined") return;
 
-    const sessionId = localStorage.getItem("sessionId");
-    if (sessionId) {
-      this.sessions.delete(sessionId);
-      localStorage.removeItem("sessionId");
-    }
+    const res = await fetch("http://localhost:3000/api/logout", {
+      method: "POST",
+    });
   }
 }
 

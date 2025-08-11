@@ -1,8 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import type { Form } from "@/lib/types";
-import type { Submission } from "@/lib/memory-store";
+import type { Form, Submittions } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -19,7 +18,7 @@ export function IndividualResponseViewer({
   submissions,
 }: {
   form: Form;
-  submissions: Submission[];
+  submissions: Submittions[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -51,7 +50,7 @@ export function IndividualResponseViewer({
             <CardTitle>Individual Response</CardTitle>
             <CardDescription>
               Submitted on{" "}
-              {new Date(currentSubmission.created_at).toLocaleString()}
+              {new Date(currentSubmission.submitted_at).toLocaleString()}
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
@@ -81,9 +80,10 @@ export function IndividualResponseViewer({
         {form.fields
           .filter((field) => !["hidden", "password"].includes(field.type))
           .map((field) => {
-            const dbColumnName =
-              field.extraAttributes?.dbColumnName || field.label;
-            const answer = currentSubmission.data[dbColumnName];
+            const submited = JSON.parse(
+              currentSubmission.submitions as unknown as string,
+            );
+            const answer = submited[field.id];
             return (
               <div key={field.id} className="p-4 border rounded-md bg-muted/20">
                 <Label className="font-semibold text-base">{field.label}</Label>

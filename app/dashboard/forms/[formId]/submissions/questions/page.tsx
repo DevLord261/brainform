@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { memoryStore } from "@/lib/memory-store";
+import { FormWithId, memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
 import {
   Accordion,
@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FormField } from "@/lib/types";
+import { FormField, Submittions } from "@/lib/types";
 
 export default async function QuestionsPage({
   params,
@@ -24,10 +24,24 @@ export default async function QuestionsPage({
       method: "GET",
     },
   );
-  const { form, fields } = await formapi.json();
-  const submissions = memoryStore.getSubmissions(formId);
+  const form = (await formapi.json()) as FormWithId;
+  const getsubmissions = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/submittions?formId=${formId}`,
+      );
+      if (!res.ok) {
+        return;
+      }
+      const json = (await res.json()) as Submittions[];
+      return json;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const submissions = await getsubmissions();
 
-  if (!form) {
+  if (!form || !submissions) {
     notFound();
   }
 
@@ -48,16 +62,21 @@ export default async function QuestionsPage({
       </CardHeader>
       <CardContent>
         <Accordion type="single" collapsible className="w-full">
-          {fields
+          {form.fields
             .filter(
               (field: FormField) =>
                 !["hidden", "password"].includes(field.type),
             )
-            .map((field: FormField, index: string) => {
+            .map((field: FormField, index: number) => {
               const dbColumnName = (field.extraAttributes?.dbColumnName ||
                 field.label) as string;
               const responses = submissions
-                .map((s) => s.data[dbColumnName])
+                .map((s) => {
+                  const submited = JSON.parse(
+                    s.submitions as unknown as string,
+                  );
+                  return submited[field.id];
+                })
                 .filter(Boolean);
               return (
                 <AccordionItem key={field.id} value={`item-${index}`}>

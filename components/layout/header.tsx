@@ -24,10 +24,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "../auth/auth-provider";
+import { useRouter } from "next/navigation";
 
 export function AppHeader() {
   const { setTheme } = useTheme(); //theme
+  const { logout } = useAuth();
+  const router = useRouter();
 
+  const handlelogout = async () => {
+    try {
+      await logout();
+      router.replace("/auth/login");
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 print-hide">
       <div className="flex items-center gap-2 mr-4">
@@ -101,7 +113,7 @@ export function AppHeader() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={handlelogout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

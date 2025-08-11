@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { FormWithId, memoryStore } from "@/lib/memory-store";
+import { FormWithId } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
 import {
   Card,
@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Printer, FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
 import { Key, use, useEffect, useState } from "react";
-import { FormField } from "@/lib/types";
+import { FormField, Submittions } from "@/lib/types";
 
 export default function SubmissionsTablePage({
   params,
@@ -32,11 +32,11 @@ export default function SubmissionsTablePage({
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = use(params);
-  // const form = memoryStore.getForm(formId);
-  const submissions = memoryStore.getSubmissions(formId);
+  // const submissions = memoryStore.getSubmissions(formId);
   const [form, setform] = useState<FormWithId | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [submissions, setSubmission] = useState<Submittions[]>();
 
   useEffect(() => {
     const formapi = async () => {
@@ -60,6 +60,22 @@ export default function SubmissionsTablePage({
         setLoading(false);
       }
     };
+    const getform = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/submittions?formId=${formId}`,
+        );
+        if (!res.ok) {
+          setError(true);
+          return;
+        }
+        const json = (await res.json()) as Submittions[];
+        setSubmission(json);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getform();
     formapi();
   }, [formId]);
 
@@ -70,25 +86,24 @@ export default function SubmissionsTablePage({
       </div>
     );
   }
-  if (error || !form) {
+  if (error || !form || !submissions) {
     notFound();
   }
-  const parsedfieds = form.fields as FormField[];
-  const headers = parsedfieds
+  const headers = form.fields
     .filter((field: FormField) => field.type !== "hidden")
     .map((field: FormField) => ({
-      key: (field.extraAttributes?.dbColumnName || field.label) as Key,
+      key: field.id as Key,
       label: field.label,
     }));
 
   const handleExport = () => {
     const dataToExport = submissions.map((submission) => {
       const row: Record<string, string> = {
-        "Submission Date": submission.created_at.toLocaleString(),
+        "Submission Date": submission.submitted_at.toLocaleString(),
       };
       headers.forEach((header) => {
         row[header.label] = String(
-          submission.data[header.key.toString()] || "",
+          submission.submitions[header.key.toString()] || "",
         );
       });
       return row;
@@ -140,18 +155,36 @@ export default function SubmissionsTablePage({
             </TableHeader>
             <TableBody>
               {submissions.length > 0 ? (
-                submissions.map((submission) => (
-                  <TableRow key={submission.id}>
-                    <TableCell>
-                      {submission.created_at.toLocaleString()}
-                    </TableCell>
-                    {headers.map((header) => (
-                      <TableCell key={header.key}>
-                        {String(submission.data[header.key.toString()] || "")}
+                submissions.map((submission) => {
+                  if (
+                    typeof submission.submitions === "string" &&
+                    submission.submitions.trim().startsWith("{")
+                  ) {
+                    try {
+                      submission.submitions = JSON.parse(submission.submitions);
+                    } catch {
+                      submission.submitions = {};
+                    }
+                  } else if (typeof submission.submitions === "object") {
+                    submission.submitions = submission.submitions;
+                  } else {
+                    submission.submitions = {};
+                  }
+                  return (
+                    <TableRow key={submission.id}>
+                      <TableCell>
+                        {submission.submitted_at.toLocaleString()}
                       </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+                      {headers.map((header) => (
+                        <TableCell key={header.key}>
+                          {String(
+                            submission.submitions[header.key.toString()] || "",
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell

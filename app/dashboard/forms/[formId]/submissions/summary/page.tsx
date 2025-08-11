@@ -2,20 +2,22 @@
 
 export const dynamic = "force-dynamic";
 
-import { memoryStore } from "@/lib/memory-store";
 import { notFound } from "next/navigation";
-import type { FormField } from "@/lib/types";
-import type { FormWithId, Submission } from "@/lib/memory-store";
+import type { FormField, Submittions } from "@/lib/types";
+import type { FormWithId } from "@/lib/memory-store";
 import { SummaryChartCard } from "@/components/submissions/summary-chart-card";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import { use, useEffect, useState } from "react";
 
 // Helper function to process data
-const processSubmissions = (fields: FormField[], submissions: Submission[]) => {
+const processSubmissions = (
+  fields: FormField[],
+  submissions: Submittions[],
+) => {
   const dailyCounts = submissions.reduce(
     (acc, s) => {
-      const date = new Date(s.created_at).toLocaleDateString("en-CA"); // YYYY-MM-DD format
+      const date = new Date(s.submitted_at).toLocaleDateString("en-CA"); // YYYY-MM-DD format
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     },
@@ -35,7 +37,11 @@ const processSubmissions = (fields: FormField[], submissions: Submission[]) => {
       const dbColumnName = (field.extraAttributes?.dbColumnName ||
         field.label) as string;
       const responses = submissions
-        .map((s) => s.data[dbColumnName])
+        .map((s) => {
+          const submited = JSON.parse(s.submitions as unknown as string);
+          // s.submitions[dbColumnName]
+          return submited[field.id];
+        })
         .filter(Boolean);
 
       if (["select", "radio", "checkbox"].includes(field.type)) {
@@ -153,6 +159,7 @@ export default function SummaryPage({
   const [form, setform] = useState<FormWithId | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [submissions, setSubmission] = useState<Submittions[]>();
 
   useEffect(() => {
     const formapi = async () => {
@@ -176,13 +183,24 @@ export default function SummaryPage({
         setLoading(false);
       }
     };
+    const getform = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/submittions?formId=${formId}`,
+        );
+        if (!res.ok) {
+          setError(true);
+          return;
+        }
+        const json = (await res.json()) as Submittions[];
+        setSubmission(json);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getform();
     formapi();
-  }, [formId]);
-
-  // const form = memoryStore.getForm(formId);
-
-  // const form = (await formapi.json()) as FormWithId;
-  const submissions = memoryStore.getSubmissions(formId);
+  }, [formId, setSubmission]);
 
   if (loading) {
     return (

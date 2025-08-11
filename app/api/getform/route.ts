@@ -8,17 +8,17 @@ export async function GET(request: NextRequest) {
   const formId = request.nextUrl.searchParams.get("formId");
   if (!formId) return NextResponse.error();
   try {
-    const formData = db
+    const form = db
       .prepare("select * from form where id=?")
       .get(formId) as FormWithId;
     // const fields = db
     //   .prepare("select fields from form where id=?")
     //   .get(formId) as fields;
-    if (!formData) {
+    if (!form) {
       return NextResponse.json(null, { status: 404 });
     }
-    formData.fields = JSON.parse(formData.fields.toString());
-    return NextResponse.json(formData);
+    form.fields = JSON.parse(form.fields.toString());
+    return NextResponse.json(form);
   } catch (e) {
     console.log(e);
     return NextResponse.error();
