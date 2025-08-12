@@ -37,25 +37,48 @@ class FormService {
     const userid = this.db
       .prepare("select id from users where token=?")
       .get(token) as user;
-    const insertform = this.db.prepare(
-      "insert into form (id,title,description,imageUrl,tableName,owner_id,fields) values (?,?,?,?,?,?,?);",
-    );
-    try {
-      const res = insertform.run(
-        form.id,
+
+    const isform = this.db
+      .prepare("select * from form where id=?")
+      .get(form.id) as FormWithId;
+
+    if (isform) {
+      const updateForm = this.db.prepare(
+        `UPDATE form
+         SET title = ?, description = ?, imageUrl = ?, tableName = ?, fields = ?
+         WHERE id = ?;`,
+      );
+
+      const res = updateForm.run(
         form.title,
         form.description,
         form.imageUrl || null,
         form.tableName || null,
-        userid.id.toString(),
         JSON.stringify(form.fields),
+        form.id,
       );
       if (res.changes) return { success: true };
-
-      return { success: false, error: "failed to create form" };
-    } catch (e) {
-      console.error(e);
-      return { success: false, error: "" + e };
+      return { success: false, error: "failed to update form" };
+    } else {
+      const insertform = this.db.prepare(
+        "insert into form (id,title,description,imageUrl,tableName,owner_id,fields) values (?,?,?,?,?,?,?);",
+      );
+      try {
+        const res = insertform.run(
+          form.id,
+          form.title,
+          form.description,
+          form.imageUrl || null,
+          form.tableName || null,
+          userid.id.toString(),
+          JSON.stringify(form.fields),
+        );
+        if (res.changes) return { success: true };
+        return { success: false, error: "failed to create form" };
+      } catch (e) {
+        console.error(e);
+        return { success: false, error: "" + e };
+      }
     }
   }
 }

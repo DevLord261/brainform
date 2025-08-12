@@ -163,7 +163,6 @@ export function FormBuilder({ initialForm }: { initialForm?: FormWithId }) {
 
   const handleSave = () => {
     startTransition(async () => {
-      console.log(form);
       const result = await saveFormAction(form);
       if (result.success) {
         // In a real app, you would use a toast notification here
