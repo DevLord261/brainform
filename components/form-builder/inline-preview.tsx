@@ -36,9 +36,9 @@ export function InlinePreview({ form }: { form: Form }) {
         <PublicFormRenderer form={form} />
 
         <Button
-          type="submit"
+          // type="submit"
           className="w-full"
-          // onClick={() => alert("Form submitted! (This is a preview)")}
+          onClick={() => alert("Form submitted! (This is a preview)")}
         >
           Submit
         </Button>
